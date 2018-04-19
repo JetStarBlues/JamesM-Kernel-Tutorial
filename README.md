@@ -1,6 +1,8 @@
-Following [James Molloy's Kernel Development tutorial][0]
+Working through [James Molloy's Kernel Development tutorial][0].
 
-Using QEMU instead of Bochs. To run:
+Uses QEMU instead of Bochs.
+
+To run:
 
 - without debugging
 	- `make qemu`
