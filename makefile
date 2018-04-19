@@ -1,3 +1,7 @@
+# Makefile code mashup of
+#  https://github.com/mit-pdos/xv6-public/blob/master/Makefile
+#  https://github.com/berkus/jamesm-tutorials/blob/master/Makefile
+
 # Generate ELF ----------------------
 
 # Compiles every file in SOURCES, then links them together
@@ -15,7 +19,7 @@ LDFLAGS = -T link.ld -m elf_i386
 
 # 64 bit
 # CFLAGS  = -nostdlib -nostdinc -fno-builtin -fno-stack-protector -Wall -g
-# ASFLAGS = -f elf64
+# ASFLAGS = -f elf64 -F dwarf -g
 # LDFLAGS = -T link.ld
 
 ELF = kernel
@@ -58,7 +62,7 @@ link:
 
 
 # Generate image --------------------
-# Code sampled from https://github.com/mit-pdos/xv6-public/blob/master/Makefile
+
 IMAGE = kernel.img
 
 genImg:
@@ -70,7 +74,6 @@ genImg:
 
 
 # Run QEMU --------------------------
-# Code sampled from https://github.com/mit-pdos/xv6-public/blob/master/Makefile
 
 # Path to QEMU
 QEMU = qemu-system-i386
