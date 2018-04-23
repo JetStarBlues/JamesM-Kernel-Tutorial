@@ -7,10 +7,25 @@
 # Compiles every file in SOURCES, then links them together
 # into one ELF binary (aka kernel)
 
-CSOURCES = main.c
-COBJECTS = main.o
+SRCDIR = src/
+
+# C files
+CSOURCES =              \
+	main.c              \
+	$(SRCDIR)common.c   \
+	$(SRCDIR)monitor.c
+COBJECTS =              \
+	main.o              \
+	$(SRCDIR)common.o   \
+	$(SRCDIR)monitor.o
+
+# Assembly files
 SSOURCES = boot.s
 SOBJECTS = boot.o
+
+
+VPATH = $(SRCDIR)
+ELF   = kernel
 
 # 32 bit
 CFLAGS  = -nostdlib -nostdinc -fno-builtin -fno-stack-protector -m32 -Wall -g
@@ -22,8 +37,6 @@ LDFLAGS = -T link.ld -m elf_i386
 # ASFLAGS = -f elf64 -F dwarf -g
 # LDFLAGS = -T link.ld
 
-ELF = kernel
-
 all:
 
 	make clean
@@ -32,9 +45,7 @@ all:
 
 	make _all
 
-
 _all: $(SOBJECTS) $(COBJECTS) link
-
 
 clean:
 
@@ -61,18 +72,6 @@ link:
 	gcc -c $(CFLAGS) $< -o $@
 
 
-# Generate image --------------------
-
-IMAGE = kernel.img
-
-genImg:
-
-	@echo "Generating image ..."
-
-	dd if=/dev/zero of=$(IMAGE) count=10000  # /dev/zero is a special file in Unix that provides as many null characters (ASCII 0x00) as are read from it
-	dd if=$(ELF)    of=$(IMAGE) conv=notrunc
-
-
 # Run QEMU --------------------------
 
 # Path to QEMU
@@ -93,11 +92,21 @@ QEMUGDB = \
 # Prompt user to setup GDB appropriately
 gdbinit:
 
-	@echo "Open gdb in another window and type the following:"
-	@echo "\tset architecture i386"
-	@echo "\ttarget remote localhost:"$(GDBPORT)
-	@echo "\tsymbol-file kernel"
+	@echo "\nOpen gdb in another window and type the following:"
+	@#echo "   set architecture i386"
+	@echo "   target remote :"$(GDBPORT)
+	@echo "   file kernel"
+	@echo "Use 'break' to set breakpoints, and 'continue' to execute.\n"
 
+qemu:
+
+	make all
+
+	@echo "Starting QEMU ..."
+	@echo "If using curses, press Esc+2 then type 'quit' to exit"
+
+	@# $(QEMU) $(QEMUOPTS)
+	$(QEMU) -display curses $(QEMUOPTS)
 
 qemu-nox:
 
@@ -107,6 +116,17 @@ qemu-nox:
 
 	$(QEMU) -nographic $(QEMUOPTS)
 
+qemu-gdb:
+
+	make all
+
+	make gdbinit
+
+	@echo "Starting QEMU ..."
+
+	@#$(QEMU) $(QEMUOPTS) -S $(QEMUGDB)
+	$(QEMU) -display curses $(QEMUOPTS) -S $(QEMUGDB)
+
 qemu-nox-gdb:
 
 	make all
@@ -114,5 +134,6 @@ qemu-nox-gdb:
 	make gdbinit
 
 	@echo "Starting QEMU ..."
+	@echo "If using curses, press Esc+2 then type 'quit' to exit"
 
 	$(QEMU) -nographic $(QEMUOPTS) -S $(QEMUGDB)

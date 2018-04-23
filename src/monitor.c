@@ -42,6 +42,47 @@ u16int *videoMemory = ( u16int * ) 0xB8000;
 u8int cursorX = 0;
 u8int cursorY = 0;
 
+// Updates the hardware cursor
+static void move_cursor ()
+{
+	// For some reason VGA accepts 16-bit location as two bytes
+
+	u16int cursorLocation = cursorY * 80 + cursorX;
+	outb( 0x3D4, 14 );                   // Tell VGA we are setting the high cursor byte
+	outb( 0x3D5, cursorLocation >> 8 );  // Send the high cursor byte
+	outb( 0x3D4, 15 );                   // Tell VGA we are setting the low byte
+	outb( 0x3D5, cursorLocation );       // Send it
+}
+
+// Scrolls the text on the screen up by one line
+static void scroll ()
+{
+	// Get a space character with the default color attributes
+	u8int  bgColor = 0;   // black
+	u8int  fgColor = 15;  // white
+	u8int  attributeByte = ( bgColor << 4 ) | ( fgColor & 0x0F );  // hi byte of word have to send to VGA
+	u16int space = ( attributeByte << 8 ) | 0x20;  // space character
+
+	if ( cursorY >= 25 )
+	{
+		// Move the current text chunk that makes up the screen back in the buffer by a line
+		int i;
+		for ( i = 0; i < 25 * 80; i += 1 )
+		{
+			videoMemory[ i ] = videoMemory[ i + 80 ];
+		}
+
+		// The last line should now be blank. Do this by writing 80 spaces to it
+		for ( i = 24 * 80; i < 25 * 80; i += 1 )
+		{
+			videoMemory[ i ] = space;
+		}
+
+		// The cursor should now be on the last line
+		cursorY = 24;
+	}
+}
+
 // Write a single character out to the screen
 void monitor_put ( char c )
 {
@@ -132,47 +173,6 @@ void monitor_write ( char *c )
 	{
 		monitor_put( c[ i ] );
 		i += 1;
-	}
-}
-
-// Updates the hardware cursor
-static void move_cursor ()
-{
-	// For some reason VGA accepts 16-bit location as two bytes
-
-	u16int cursorLocation = cursorY * 80 + cursorX;
-	outb( 0x3D4, 14 );                   // Tell VGA we are setting the high cursor byte
-	outb( 0x3D5, cursorLocation >> 8 );  // Send the high cursor byte
-	outb( 0x3D4, 15 );                   // Tell VGA we are setting the low byte
-	outb( 0x3D5, cursorLocation );       // Send it
-}
-
-// Scrolls the text on the screen up by one line
-static void scroll ()
-{
-	// Get a space character with the default color attributes
-	u8int  bgColor = 0;   // black
-	u8int  fgColor = 15;  // white
-	u8int  attributeByte = ( bgColor << 4 ) | ( fgColor & 0x0F );  // hi byte of word have to send to VGA
-	u16int space = ( attributeByte << 8 ) | 0x20;  // space character
-
-	if ( cursorY >= 25 )
-	{
-		// Move the current text chunk that makes up the screen back in the buffer by a line
-		int i;
-		for ( i = 0; i < 25 * 80; i += 1 )
-		{
-			videoMemory[ i ] = videoMemory[ i + 80 ];
-		}
-
-		// The last line should now be blank. Do this by writing 80 spaces to it
-		for ( i = 24 * 80; i < 25 * 80; i += 1 )
-		{
-			videoMemory[ i ] = space;
-		}
-
-		// The cursor should now be on the last line
-		cursorY = 24;
 	}
 }
 

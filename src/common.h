@@ -23,7 +23,6 @@ u8int  inb  ( u16int port );
 // Read a short from the specified port
 u16int inw  ( u16int port );
 
-/*
 // Copy len bytes from src to dest
 void memcpy ( u8int *dest, const u8int *src, u32int len );
 
@@ -38,6 +37,5 @@ char *strcpy ( char *dest, const char *src );
 
 // Concatenate the NULL-terminated string src onto the end of dest, and return dest
 char *strcat ( char *dest, const char *src );
-*/
 
 #endif  // COMMON_H
