@@ -7,7 +7,7 @@ void outb ( u16int port, u8int value )
 }
 
 // Read a byte from the specified port
-u8int inb (  u16int port )
+u8int inb ( u16int port )
 {
 	u8int ret;
 	asm volatile ( "inb %1, %0" : "=a" ( ret ) : "dN" ( port ) );
@@ -15,7 +15,7 @@ u8int inb (  u16int port )
 }
 
 // Read a short from the specified port
-u16int inw (  u16int port )
+u16int inw ( u16int port )
 {
 	u16int ret;
 	asm volatile ( "inw %1, %0" : "=a" ( ret ) : "dN" ( port ) );
@@ -101,7 +101,6 @@ char *strcpy ( char *dest, const char *src )
 // Concatenate the NULL-terminated string src onto the end of dest, and return dest
 char *strcat ( char *dest, const char *src )
 {
-
 	// while ( *dest != 0 )  // doesn't equal null??
 	while ( *dest != '\0' )
 	{

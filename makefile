@@ -10,18 +10,28 @@
 SRCDIR = src/
 
 # C files
-CSOURCES =              \
-	main.c              \
-	$(SRCDIR)common.c   \
-	$(SRCDIR)monitor.c
-COBJECTS =              \
-	main.o              \
-	$(SRCDIR)common.o   \
-	$(SRCDIR)monitor.o
+CSOURCES =                        \
+	main.c                        \
+	$(SRCDIR)common.c             \
+	$(SRCDIR)monitor.c            \
+	$(SRCDIR)descriptorTables.c   \
+	$(SRCDIR)interrupts.c
+COBJECTS =                        \
+	main.o                        \
+	$(SRCDIR)common.o             \
+	$(SRCDIR)monitor.o            \
+	$(SRCDIR)descriptorTables.o   \
+	$(SRCDIR)interrupts.o
 
 # Assembly files
-SSOURCES = boot.s
-SOBJECTS = boot.o
+SSOURCES =                        \
+	boot.s                        \
+	$(SRCDIR)descriptorTables_.s  \
+	$(SRCDIR)interrupts_.s
+SOBJECTS =                        \
+	boot.o                        \
+	$(SRCDIR)descriptorTables_.o  \
+	$(SRCDIR)interrupts_.o
 
 
 VPATH = $(SRCDIR)
@@ -51,7 +61,7 @@ clean:
 
 	@echo "Removing object files ..."
 
-	-rm *.o $(ELF) $(IMAGE)
+	-rm *.o $(SRCDIR)*.o $(ELF)
 
 link:
 
@@ -78,7 +88,8 @@ link:
 QEMU = qemu-system-i386
 
 # Flags
-QEMUOPTS = -kernel $(ELF)
+# QEMUOPTS = -kernel $(ELF)
+QEMUOPTS = -kernel $(ELF) -D logfile -d cpu_reset
 
 # Try to generate a unique GDB port
 GDBPORT = $(shell expr `id -u` % 5000 + 25000)
@@ -94,8 +105,8 @@ gdbinit:
 
 	@echo "\nOpen gdb in another window and type the following:"
 	@#echo "   set architecture i386"
-	@echo "   target remote :"$(GDBPORT)
 	@echo "   file kernel"
+	@echo "   target remote :"$(GDBPORT)
 	@echo "Use 'break' to set breakpoints, and 'continue' to execute.\n"
 
 qemu:

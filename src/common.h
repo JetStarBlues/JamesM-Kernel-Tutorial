@@ -15,13 +15,13 @@ typedef          char  s8int;
 
 
 // Write a byte out to the specified port
-void   outb ( u16int port, u8int value );
+void outb ( u16int port, u8int value );
 
 // Read a byte from the specified port
-u8int  inb  ( u16int port );
+u8int inb ( u16int port );
 
 // Read a short from the specified port
-u16int inw  ( u16int port );
+u16int inw ( u16int port );
 
 // Copy len bytes from src to dest
 void memcpy ( u8int *dest, const u8int *src, u32int len );

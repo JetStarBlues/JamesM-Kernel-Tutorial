@@ -47,7 +47,7 @@ start:
 
 	; Handle return
 	jmp   $                         ; Enter an infinite loop, to stop the processor
-                                    ; executing whatever rubbish is in the memory after our kernel!
+	                                ; executing whatever rubbish is in the memory after our kernel!
 
 
 ; Here is the definition of our BSS section. Right now, we'll use
