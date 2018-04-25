@@ -23,7 +23,7 @@ int testScreen ()  // section 3
 int testInterrupt ()  // section 4
 {
 
-	// asm volatile ( "int $0x3" );
+	asm volatile ( "int $0x3" );
 	asm volatile ( "int $0x4" );
 	asm volatile ( "int $0x5" );
 

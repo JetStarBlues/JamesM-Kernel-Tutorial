@@ -29,11 +29,11 @@
 struct gdt_entry_struct
 {
 	u16int limit_low;           // The lower 16 bits of the limit
-	u8int  base_high;           // The upper 8 bits of the base
-	u8int  base_middle;         // The next 8 bits of the base
 	u16int base_low;            // The lower 16 bits of the base
+	u8int  base_middle;         // The next 8 bits of the base
 	u8int  access;              // Access flags. Determine what ring this segment can be used in
 	u8int  granularity;         // 
+	u8int  base_high;           // The upper 8 bits of the base
 } __attribute__( ( packed ) );
 
 typedef struct gdt_entry_struct gdt_entry_t;
@@ -44,7 +44,7 @@ struct gdt_ptr_struct
 {
 	u16int limit;               // The upper 16 bits of all selector limits ?
 	                            // Size of the table minus one (last valid address in table)?
-	u16int base;                // The address of the first gdt_entry_t struct
+	u32int base;                // The address of the first gdt_entry_t struct
 } __attribute__( ( packed ) );
 
 typedef struct gdt_ptr_struct gdt_ptr_t;
@@ -58,11 +58,11 @@ void init_descriptor_tables();
 // IDT entry
 struct idt_entry_struct
 {
-	u16int base_high;           // The upper 16 bits of the address to jump to
 	u16int base_low;            // The lower 16 bits of the address to jump to when this interrupt fires
 	u16int sel;                 // Kernel segment selector
 	u8int  always0;             // This must always be zero
 	u8int  flags;               // More flags. See documentation
+	u16int base_high;           // The upper 16 bits of the address to jump to
 } __attribute__( ( packed ) );
 
 typedef struct idt_entry_struct idt_entry_t;

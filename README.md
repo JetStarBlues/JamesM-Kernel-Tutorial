@@ -13,7 +13,7 @@ To run:
 - without display, with debugging
 	- `make qemu-nox-gdb`
 
-For display, uses curses. In the makefile, you can change this so that it uses a [display of your choice][1].
+Uses curses for display. In the makefile, you can change this so that it uses a [display of your choice][1].
 
 
 [0]: http://www.jamesmolloy.co.uk/tutorial_html/
