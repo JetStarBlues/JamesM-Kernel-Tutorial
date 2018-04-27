@@ -15,13 +15,15 @@ CSOURCES =                        \
 	$(SRCDIR)common.c             \
 	$(SRCDIR)monitor.c            \
 	$(SRCDIR)descriptorTables.c   \
-	$(SRCDIR)interrupts.c
+	$(SRCDIR)interrupts.c         \
+	$(SRCDIR)timer.c
 COBJECTS =                        \
 	main.o                        \
 	$(SRCDIR)common.o             \
 	$(SRCDIR)monitor.o            \
 	$(SRCDIR)descriptorTables.o   \
-	$(SRCDIR)interrupts.o
+	$(SRCDIR)interrupts.o         \
+	$(SRCDIR)timer.o
 
 # Assembly files
 SSOURCES =                        \
@@ -88,8 +90,8 @@ link:
 QEMU = qemu-system-i386
 
 # Flags
-# QEMUOPTS = -kernel $(ELF)
-QEMUOPTS = -kernel $(ELF) -D logfile -d cpu_reset
+QEMUOPTS = -kernel $(ELF)
+# QEMUOPTS = -kernel $(ELF) -D logfile -d cpu_reset
 
 # Try to generate a unique GDB port
 GDBPORT = $(shell expr `id -u` % 5000 + 25000)

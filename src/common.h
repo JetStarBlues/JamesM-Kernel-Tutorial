@@ -1,8 +1,8 @@
 // Defines typedefs and some global functions
 
 #ifndef COMMON_H
-
 #define COMMON_H
+
 
 // Some nice typedefs to standardize sizes across platforms
 // These typedefs are written for 32-bit x86
@@ -37,5 +37,6 @@ char *strcpy ( char *dest, const char *src );
 
 // Concatenate the NULL-terminated string src onto the end of dest, and return dest
 char *strcat ( char *dest, const char *src );
+
 
 #endif  // COMMON_H

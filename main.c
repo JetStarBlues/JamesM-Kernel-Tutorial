@@ -1,6 +1,11 @@
 // Defines the C-code kernel entry point, calls initialisation routines
 
 #include "src/monitor.h"
+#include "src/descriptorTables.h"
+#include "src/interrupts.h"
+#include "src/timer.h"
+
+u32int tick = 0;
 
 int helloWorld ()  // section 2
 {
@@ -30,6 +35,29 @@ int testInterrupt ()  // section 4
 	return 0;
 }
 
+static void timer_callback ( registers_t regs )
+{
+	tick += 1;
+
+	monitor_write( "Tick: " );
+	monitor_write_dec( tick );
+	monitor_put( '\n' );
+}
+
+int testTimer ()  // section 5
+{
+	// register handler
+	register_interrupt_handler( IRQ0, &timer_callback );
+
+	// enable interrupts
+	asm volatile("sti");
+
+	// init timer
+	init_timer( 20 );  // frequency in Hz
+
+	return 0;
+}
+
 void init ()
 {
 	// Initialize ISRs and segments
@@ -46,5 +74,6 @@ int main ( struct multiboot *mboot_ptr )
 	// Test ---
 	// return helloWorld();
 	// return testScreen();
-	return testInterrupt();
+	// return testInterrupt();
+	return testTimer();
 }
