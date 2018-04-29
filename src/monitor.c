@@ -184,8 +184,8 @@ void monitor_write_hex ( u32int n )
 	monitor_write( "0x" );
 
 	char noZeroes = 1;
-
 	int i;
+
 	for ( i = 28; i > 0; i -= 4 )
 	{
 		tmp = ( n >> i ) & 0xF;
@@ -209,6 +209,7 @@ void monitor_write_hex ( u32int n )
 
 	// last nibble
 	tmp = n & 0xF;
+
 	if ( tmp >= 0xA )
 	{
 		monitor_put( tmp - 0xA + 'a' );  // a..f
@@ -222,16 +223,19 @@ void monitor_write_hex ( u32int n )
 //
 void monitor_write_dec ( u32int n )
 {
+	char  c [ 32 ];
+	char c2 [ 32 ];
+	int i;
+
 	if ( n == 0 )
 	{
 		monitor_put( '0' );
 		return;
 	}
 
-	char c[ 32 ];
 	s32int acc = n;
-	int i = 0;
 
+	i = 0;
 	while ( acc > 0 )
 	{
 		c[ i ] = acc % 10 + '0';  //
@@ -243,7 +247,6 @@ void monitor_write_dec ( u32int n )
 	c[ i ] = 0;  // ?
 
 	//
-	char c2[ 32 ];
 	c2[ i ] = 0;  // ?
 	i -= 1;
 

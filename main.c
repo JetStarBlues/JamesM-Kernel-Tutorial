@@ -4,6 +4,7 @@
 #include "src/descriptorTables.h"
 #include "src/interrupts.h"
 #include "src/timer.h"
+#include "src/paging.h"
 
 u32int tick = 0;
 
@@ -35,7 +36,7 @@ int testInterrupt ()  // section 4
 	return 0;
 }
 
-static void timer_callback ( registers_t regs )
+static void timerCallback ( registers_t regs )
 {
 	tick += 1;
 
@@ -47,13 +48,26 @@ static void timer_callback ( registers_t regs )
 int testTimer ()  // section 5
 {
 	// register handler
-	register_interrupt_handler( IRQ0, &timer_callback );
+	register_interrupt_handler( IRQ0, &timerCallback );
 
 	// enable interrupts
 	asm volatile("sti");
 
 	// init timer
 	init_timer( 20 );  // frequency in Hz
+
+	return 0;
+}
+
+int testPaging ()  // section 6
+{
+	initialise_paging();
+
+	monitor_write( "Paging test...\n" );
+
+	u32int *ptr = ( u32int* ) 0xA0000000;
+
+	u32int trigger_page_fault = *ptr;  // force page fault by reading location
 
 	return 0;
 }
@@ -75,5 +89,6 @@ int main ( struct multiboot *mboot_ptr )
 	// return helloWorld();
 	// return testScreen();
 	// return testInterrupt();
-	return testTimer();
+	// return testTimer();
+	return testPaging();
 }

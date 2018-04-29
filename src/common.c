@@ -23,11 +23,10 @@ u16int inw ( u16int port )
 }
 
 // Copy len bytes from src to dest
-void memcpy ( u8int *dest, const u8int *src, u32int len )
+void memcpy ( u32int *dest, const u32int *src, u32int len )
 {
-	const u8int *sp = ( const u8int * ) src;  //?
-
-	u8int *dp = ( u8int * ) dest;  // ?
+	const u32int *sp = src;
+	u32int *dp = dest;
 
 	for ( ; len != 0; len -= 1 )
 	{
@@ -38,10 +37,10 @@ void memcpy ( u8int *dest, const u8int *src, u32int len )
 	}
 }
 
-// Write len copies of val into dest?
-void memset ( u8int *dest, u8int val, u32int len )
+// Write len copies of val into dest
+void memset ( u32int *dest, u8int val, u32int len )  // byte-addressable
 {
-	u8int *temp = ( u8int * ) dest;
+	u32int *temp = dest;
 
 	for ( ; len != 0; len -= 1 )
 	{
@@ -77,7 +76,7 @@ int strcmp ( char *str1, char *str2 )
 	if ( ( str1[ i ] == '\0' && str2[ i ] != '\0' ) ||  // len( str2 ) > len( str1 )
 	     ( str1[ i ] != '\0' && str2[ i ] == '\0' ) )   // len( str1 ) > len( str2 )
 	{
-		failed = -1;
+		failed = - 1;
 	}
 
 	return failed;
@@ -91,7 +90,7 @@ char *strcpy ( char *dest, const char *src )
 		*dest = *src;
 
 		dest += 1;
-		src += 1;
+		src  += 1;
 	}
 	while ( *src != 0 );
 
@@ -101,11 +100,9 @@ char *strcpy ( char *dest, const char *src )
 // Concatenate the NULL-terminated string src onto the end of dest, and return dest
 char *strcat ( char *dest, const char *src )
 {
-	// while ( *dest != 0 )  // doesn't equal null??
+	// while ( *dest != 0 )  // doesn't equal null
 	while ( *dest != '\0' )
 	{
-		// *dest = *dest;  // ??
-
 		dest += 1;
 	}
 
@@ -114,10 +111,46 @@ char *strcat ( char *dest, const char *src )
 		*dest = *src;
 
 		dest += 1;
-		src += 1;
+		src  += 1;
 	}
 	// while ( *src != 0 );
 	while ( *src != '\0' );
 
 	return dest;
+}
+
+// Prints message and enters infinite loop (stopping program execution)
+extern void panic ( const char *message, const char *file, u32int line )
+{
+	// We encountered a massive problem and have to stop
+	asm volatile( "cli" );  // disable interrupts
+
+	monitor_write( "PANIC(" );
+	monitor_write( ( char * ) message  );
+	monitor_write( ") at "  );
+	monitor_write( ( char * ) file     );
+	monitor_write( ":"      );
+	monitor_write_dec( line );
+	monitor_write( "\n"     );
+
+	// Halt by going into an infinite loop
+	for(;;);
+}
+
+// Prints message and enters infinite loop (stopping program execution)
+extern void panic_assert ( const char *file, u32int line, const char *desc )
+{
+	// An assertion failed, and we have to panic
+	asm volatile( "cli" );  // disable interrupts
+
+	monitor_write( "ASSERTION-FAILED(" );
+	monitor_write( ( char * ) desc                );
+	monitor_write( ") at "             );
+	monitor_write( ( char * ) file                );
+	monitor_write( ":"                 );
+	monitor_write_dec( line            );
+	monitor_write( "\n"                );
+
+	// Halt by going into an infinite loop
+	for(;;);
 }

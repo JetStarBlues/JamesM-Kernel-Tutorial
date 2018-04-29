@@ -16,14 +16,18 @@ CSOURCES =                        \
 	$(SRCDIR)monitor.c            \
 	$(SRCDIR)descriptorTables.c   \
 	$(SRCDIR)interrupts.c         \
-	$(SRCDIR)timer.c
+	$(SRCDIR)timer.c              \
+	$(SRCDIR)kernelHeap.c         \
+	$(SRCDIR)paging.c
 COBJECTS =                        \
 	main.o                        \
 	$(SRCDIR)common.o             \
 	$(SRCDIR)monitor.o            \
 	$(SRCDIR)descriptorTables.o   \
 	$(SRCDIR)interrupts.o         \
-	$(SRCDIR)timer.o
+	$(SRCDIR)timer.o              \
+	$(SRCDIR)kernelHeap.o         \
+	$(SRCDIR)paging.o
 
 # Assembly files
 SSOURCES =                        \

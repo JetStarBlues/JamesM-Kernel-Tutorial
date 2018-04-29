@@ -1,7 +1,7 @@
 #include "interrupts.h"
 #include "monitor.h"
 
-isr_t interrupt_handlers[ 256 ];
+isr_t interrupt_handlers [ 256 ];
 
 // This gets called from our ASM interrupt handler stub
 void isr_handler( registers_t regs )

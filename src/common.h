@@ -24,10 +24,10 @@ u8int inb ( u16int port );
 u16int inw ( u16int port );
 
 // Copy len bytes from src to dest
-void memcpy ( u8int *dest, const u8int *src, u32int len );
+void memcpy ( u32int *dest, const u32int *src, u32int len );
 
 // Write len copies of val into dest?
-void memset ( u8int *dest, u8int val, u32int len );
+void memset ( u32int *dest, u8int val, u32int len );
 
 // Compare two strings
 int strcmp ( char *str1, char *str2 );
@@ -37,6 +37,19 @@ char *strcpy ( char *dest, const char *src );
 
 // Concatenate the NULL-terminated string src onto the end of dest, and return dest
 char *strcat ( char *dest, const char *src );
+
+// Prints message and enters infinite loop (stopping program execution)
+#define PANIC( msg ) panic( msg, __FILE__, __LINE__ );
+extern void panic ( const char *message, const char *file, u32int line );
+
+// If assertion fails, prints message and enters infinite loop (stopping program execution)
+#define ASSERT( b ) ( ( b ) ? ( void ) 0 : panic_assert( __FILE__, __LINE__, #b ) );
+extern void panic_assert ( const char *file, u32int line, const char *desc );
+
+// Forward declarations, used by panic but defined in monitor.c
+void monitor_write ( char *c );
+void monitor_write_dec ( u32int n );
+void monitor_write_hex ( u32int n );
 
 
 #endif  // COMMON_H

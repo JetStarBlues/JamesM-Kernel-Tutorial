@@ -57,9 +57,9 @@ static void gdt_set_gate ( s32int, u32int, u32int, u8int, u8int );
 static void init_idt ();
 static void idt_set_gate ( u8int, u32int, u16int, u8int );
 
-gdt_entry_t gdt_entries[ 5 ];
+gdt_entry_t gdt_entries [ 5 ];
 gdt_ptr_t   gdt_ptr;
-idt_entry_t idt_entries[ 256 ];
+idt_entry_t idt_entries [ 256 ];
 idt_ptr_t   idt_ptr;
 
 // Initializes the GDT and IDT
@@ -105,7 +105,7 @@ static void init_idt ()
 	idt_ptr.base  = ( u32int ) &idt_entries;
 
 	// zero all the interrupt service routines
-	memset( ( u8int * ) &idt_entries, 0, sizeof( idt_entry_t ) * 256 );
+	memset( ( u32int * ) &idt_entries, 0, sizeof( idt_entry_t ) * 256 );
 
 	// Remap the irq table
 	/* PIC1 - command 0x20, data 0x21

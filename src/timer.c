@@ -21,7 +21,7 @@ void init_timer ( u32int frequency )  // frequency in Hz
 
 		7..6  |  00   channel: 0
 		5..4  |  11   access mode: lo/hi byte
-		3..1  |  011  operating mode: square wave generator?
+		3..1  |  011  operating mode: square wave generator?, IRQ0 on rising edge
 		   0  |  0    bcd/binary mode: 16-bit binary
 	*/
 	outb( 0x43, 0x36 );
