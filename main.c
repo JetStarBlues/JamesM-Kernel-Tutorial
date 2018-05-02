@@ -1,10 +1,12 @@
 // Defines the C-code kernel entry point, calls initialisation routines
 
+#include "src/common.h"
 #include "src/monitor.h"
 #include "src/descriptorTables.h"
 #include "src/interrupts.h"
 #include "src/timer.h"
 #include "src/paging.h"
+#include "src/kernelHeap.h"
 
 u32int tick = 0;
 
@@ -72,6 +74,34 @@ int testPaging ()  // section 6
 	return 0;
 }
 
+int testHeap ()  // section 7
+{
+	// u32int a = kmalloc( 8 );  // allocated via placement_address because called before initializing paging
+
+	initialise_paging();
+
+	// u32int b = kmalloc( 8 );
+	// u32int c = kmalloc( 8 );
+
+	// u32int b_old = b;
+
+	// monitor_write( "a: "   ); monitor_write_hex( a );
+	// monitor_write( ", b: " ); monitor_write_hex( b );
+	// monitor_write( "\nc: " ); monitor_write_hex( c );
+
+	// kfree( ( void * ) c );
+	// kfree( ( void * ) b );
+
+	// u32int d = kmalloc( 12 );
+
+	// monitor_write( ", d: " ); monitor_write_hex( d ); 
+
+	// // if the address of d is the same as previously b, the reclaim was successful
+	// ASSERT( d == b_old );
+
+	return 0;
+}
+
 void init ()
 {
 	// Initialize ISRs and segments
@@ -90,5 +120,6 @@ int main ( struct multiboot *mboot_ptr )
 	// return testScreen();
 	// return testInterrupt();
 	// return testTimer();
-	return testPaging();
+	// return testPaging();
+	return testHeap();
 }

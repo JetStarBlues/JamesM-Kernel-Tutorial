@@ -18,7 +18,8 @@ CSOURCES =                        \
 	$(SRCDIR)interrupts.c         \
 	$(SRCDIR)timer.c              \
 	$(SRCDIR)kernelHeap.c         \
-	$(SRCDIR)paging.c
+	$(SRCDIR)paging.c             \
+	$(SRCDIR)orderedArray.c
 COBJECTS =                        \
 	main.o                        \
 	$(SRCDIR)common.o             \
@@ -27,7 +28,8 @@ COBJECTS =                        \
 	$(SRCDIR)interrupts.o         \
 	$(SRCDIR)timer.o              \
 	$(SRCDIR)kernelHeap.o         \
-	$(SRCDIR)paging.o
+	$(SRCDIR)paging.o             \
+	$(SRCDIR)orderedArray.o
 
 # Assembly files
 SSOURCES =                        \

@@ -4,6 +4,10 @@
 #define COMMON_H
 
 
+//
+#define NBITS 32
+
+
 // Some nice typedefs to standardize sizes across platforms
 // These typedefs are written for 32-bit x86
 typedef unsigned int   u32int;
