@@ -6,12 +6,10 @@
 
 # Setup -----------------------------
 
-# Paths
+# Source paths
 SRCDIR   = src/
-TOOLSDIR = tools/
-FSDIR    = fs/
 
-VPATH  = $(SRCDIR) $(TOOLSDIR) $(FSDIR)
+VPATH  = $(SRCDIR)
 
 # C files
 CSOURCES =                        \
@@ -53,6 +51,9 @@ SOBJECTS =                        \
 ELF    = kernel
 INITRD = initialRamDisk.img
 
+# Other makefiles
+FSMAKEPATH = tools/make_fs
+
 # 32 bit flags
 CFLAGS  = -nostdlib -nostdinc -fno-builtin -fno-stack-protector -m32 -Wall -g
 ASFLAGS = -f elf -F dwarf -g
@@ -74,7 +75,7 @@ all:
 
 	make _all
 
-	# make fs
+	make subsystem
 
 _all: $(SOBJECTS) $(COBJECTS) link
 
@@ -105,16 +106,9 @@ link:
 
 # Generate initrd -------------------
 
-# fs:
+subsystem:
 
-# 	@echo "Generating initialRamDisk ..."
-
-# 	gcc -Wall $(TOOLSDIR)generateInitialRamDisk.c -o $(TOOLSDIR)generateInitialRamDisk.o
-# 	# ./generateInitialRamDisk.o srcFilea1 dstFile 1 scrFile2 dstFile2 ...
-# 	$(TOOLSDIR)generateInitialRamDisk.o hello.txt hello.txt song.txt song.txt
-
-# First manualy specify files...
-# Then see if can automate reading dir
+	cd $(FSMAKEPATH) && $(MAKE)
 
 
 # Run QEMU --------------------------
@@ -123,7 +117,8 @@ link:
 QEMU = qemu-system-i386
 
 # Flags
-QEMUOPTS = -kernel $(ELF)
+# QEMUOPTS = -kernel $(ELF)
+QEMUOPTS = -kernel $(ELF) -initrd $(INITRD)
 # QEMUOPTS = -kernel $(ELF) -D logfile -d cpu_reset
 
 # CPUS := 2
