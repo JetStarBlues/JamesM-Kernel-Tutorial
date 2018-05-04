@@ -1,11 +1,14 @@
 /*
 	Usage:
 		gcc -Wall generateInitialRamDisk.c -o generateInitialRamDisk.o
-		./generateInitialRamDisk.o srcFilea1 dstFile 1 scrFile2 dstFile2 ...
+		./generateInitialRamDisk.o srcFilePath srcFilea1 scrFile2
 */
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+
+const char *imagePath = "../../initialRamDisk.img";
+const char *srcFSPath;
 
 struct initrd_header
 {
@@ -19,10 +22,13 @@ int main ( int argc, char **argv )
 {
 	int i;
 	int sz_initrd_header;
-	char* srcFile;
 	char* dstFile;
+	char srcFile [ 300 ];
 
-	int nheaders = ( argc - 1 ) / 2;
+	srcFSPath = argv[ 1 ];
+	// printf( "%s\n", srcFSPath );
+
+	int nheaders = argc - 2;
 
 	struct initrd_header headers[ 64 ];
 
@@ -34,8 +40,10 @@ int main ( int argc, char **argv )
 
 	for ( i = 0; i < nheaders; i += 1 )
 	{
-		srcFile = argv[ i * 2 + 1 ];
-		dstFile = argv[ i * 2 + 2 ];
+		dstFile = argv[ 2 + i ];
+
+		strcpy( srcFile, srcFSPath );
+		strcat( srcFile, dstFile );
 
 		printf( "Writing file %s to %s at 0x%x\n", srcFile, dstFile, offset );
 
@@ -63,17 +71,20 @@ int main ( int argc, char **argv )
 		headers[ i ].magic = 0xBF;
 	}
 
-	FILE *wstream = fopen( "../initialRamDisk.img", "w" );
+	FILE *wstream = fopen( imagePath, "w" );
 
 	unsigned char *data = ( unsigned char * ) malloc( offset );
 
 	fwrite( &nheaders, sizeof( int ), 1, wstream );
 
 	fwrite( headers, sz_initrd_header, 64, wstream );
-	
+
 	for ( i = 0; i < nheaders; i += 1 )
 	{
-		srcFile = argv[ i * 2 + 1 ];
+		dstFile = argv[ 2 + i ];
+
+		strcpy( srcFile, srcFSPath );
+		strcat( srcFile, dstFile );
 
 		FILE *stream = fopen( srcFile, "r" );
 

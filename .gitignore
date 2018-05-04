@@ -1,5 +1,6 @@
 *.o
 kernel
+initialRamDisk.img
 
 raw/
 logfile

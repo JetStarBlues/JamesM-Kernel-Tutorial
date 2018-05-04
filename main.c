@@ -159,7 +159,7 @@ int testFileSystem ( struct multiboot *mboot_ptr )  // section 8
 				monitor_put( buf[ j ] );
 			}
 
-			monitor_write("\"\n");
+			monitor_write( "\"\n" );
 		}
 
 		i += 1;
@@ -187,6 +187,6 @@ int main ( struct multiboot *mboot_ptr )
 	// return testInterrupt();
 	// return testTimer();
 	// return testPaging();
-	return testHeap();
-	// return testFileSystem( mboot_ptr );
+	// return testHeap();
+	return testFileSystem( mboot_ptr );
 }
