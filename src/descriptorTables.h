@@ -1,5 +1,5 @@
-#ifndef DESCRIPTORTABLES_H
-#define DESCRIPTORTABLES_H
+#ifndef DESCRIPTOR_TABLES_H
+#define DESCRIPTOR_TABLES_H
 
 
 #include "common.h"
@@ -138,4 +138,4 @@ extern void irq14 ();
 extern void irq15 ();
 
 
-#endif  // DESCRIPTORTABLES_H
+#endif  // DESCRIPTOR_TABLES_H

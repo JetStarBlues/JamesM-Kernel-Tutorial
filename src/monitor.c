@@ -176,6 +176,12 @@ void monitor_write ( char *c )
 	}
 }
 
+// Write a newline character
+void monitor_writeln ()
+{
+	monitor_put( '\n' );
+}
+
 //
 void monitor_write_hex ( u32int n )
 {

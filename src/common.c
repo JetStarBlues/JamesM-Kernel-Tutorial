@@ -23,30 +23,25 @@ u16int inw ( u16int port )
 }
 
 // Copy len bytes from src to dest
-void memcpy ( u32int *dest, const u32int *src, u32int len )
+void memcpy ( u8int *dest, const u8int *src, u32int len )
 {
-	const u32int *sp = src;
-	u32int *dp = dest;
-
 	for ( ; len != 0; len -= 1 )
 	{
-		*dp = *sp;
+		*dest = *src;
 
-		dp += 1;
-		sp += 1;
+		dest += 1;
+		src  += 1;
 	}
 }
 
 // Write len copies of val into dest
-void memset ( u32int *dest, u8int val, u32int len )  // byte-addressable
+void memset ( u8int *dest, u8int val, u32int len )  // byte-addressable
 {
-	u32int *temp = dest;
-
 	for ( ; len != 0; len -= 1 )
 	{
-		*temp = val;
+		*dest = val;
 
-		temp += 1;
+		dest += 1;
 	}
 }
 
@@ -83,7 +78,7 @@ int strcmp ( char *str1, char *str2 )
 }
 
 // Copy the NULL-terminated string src into dest, and return dest
-char *strcpy ( char *dest, const char *src )
+char* strcpy ( char *dest, const char *src )
 {
 	do  // executed at least once
 	{
@@ -98,7 +93,7 @@ char *strcpy ( char *dest, const char *src )
 }
 
 // Concatenate the NULL-terminated string src onto the end of dest, and return dest
-char *strcat ( char *dest, const char *src )
+char* strcat ( char *dest, const char *src )
 {
 	// while ( *dest != 0 )  // doesn't equal null
 	while ( *dest != '\0' )
@@ -117,6 +112,20 @@ char *strcat ( char *dest, const char *src )
 	while ( *src != '\0' );
 
 	return dest;
+}
+
+// Get the string length
+u32int strlen ( const char *s )
+{
+	u32int len = 0;
+
+	while ( *s != '\0' )
+	{
+		len += 1;
+		s   += 1;
+	}
+
+	return len;	
 }
 
 // Prints message and enters infinite loop (stopping program execution)

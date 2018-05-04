@@ -182,11 +182,11 @@ void initialise_paging ()
 
 	// Track allocated frames (nframes/32 words with each bit representing a frame)
 	frames = ( u32int * ) kmalloc( INDEX_FROM_BIT( nframes ) );
-	memset( frames, 0, INDEX_FROM_BIT( nframes ) );  // fill with zeros
+	memset( ( u8int * ) frames, 0, INDEX_FROM_BIT( nframes ) );  // fill with zeros
 
 	// Make a page directory
 	tmp = kmalloc_aligned( sizeof( page_directory_t ) );
-	memset( ( u32int * ) tmp, 0, sizeof( page_directory_t ) );  // fill with zeros
+	memset( ( u8int * ) tmp, 0, sizeof( page_directory_t ) );  // fill with zeros
 	kernel_directory = ( page_directory_t * ) tmp;
 
 	current_directory = kernel_directory;
@@ -263,7 +263,7 @@ page_t *get_page ( u32int address, int make, page_directory_t *dir )
 
 		// Retrieve a memory block which is page aligned and its physical address
 		virtual_address = kmalloc_alignedp( sizeof( page_table_t ), &physical_address );
-		memset( ( u32int * ) virtual_address, 0, PAGE_SIZE );  // fill with zeros
+		memset( ( u8int * ) virtual_address, 0, PAGE_SIZE );  // fill with zeros
 		
 		// Store virtual address
 		dir -> tables[ table_idx ] = ( page_table_t * ) virtual_address;

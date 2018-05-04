@@ -105,7 +105,7 @@ static void init_idt ()
 	idt_ptr.base  = ( u32int ) &idt_entries;
 
 	// zero all the interrupt service routines
-	memset( ( u32int * ) &idt_entries, 0, sizeof( idt_entry_t ) * 256 );
+	memset( ( u8int * ) &idt_entries, 0, sizeof( idt_entry_t ) * 256 );
 
 	// Remap the irq table
 	/* PIC1 - command 0x20, data 0x21

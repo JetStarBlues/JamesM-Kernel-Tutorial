@@ -15,7 +15,7 @@ ordered_array_t orderedArray_create ( u32int max_size, lessthan_predicate_t less
 
 	address = kmalloc( max_size * sizeof( type_t ) );
 	a.array = ( void * ) address;
-	memset( ( u32int * ) address, 0, max_size * sizeof( type_t ) );  // fill with zeros
+	memset( ( u8int * ) address, 0, max_size * sizeof( type_t ) );  // fill with zeros
 
 	a.size = 0;
 	a.max_size = max_size;
@@ -30,7 +30,7 @@ ordered_array_t orderedArray_place ( void *address, u32int max_size, lessthan_pr
 	ordered_array_t a;
 
 	a.array = ( type_t * ) address;
-	memset( ( u32int * ) address, 0, max_size * sizeof( type_t ) );  // fill with zeros
+	memset( ( u8int * ) address, 0, max_size * sizeof( type_t ) );  // fill with zeros
 
 	a.size = 0;
 	a.max_size = max_size;

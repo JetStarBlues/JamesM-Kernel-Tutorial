@@ -2,12 +2,16 @@
 #  https://github.com/mit-pdos/xv6-public/blob/master/Makefile
 #  https://github.com/berkus/jamesm-tutorials/blob/master/Makefile
 
-# Generate ELF ----------------------
+# Compiles every file in SOURCES, then links them together into one ELF binary (aka kernel)
 
-# Compiles every file in SOURCES, then links them together
-# into one ELF binary (aka kernel)
+# Setup -----------------------------
 
-SRCDIR = src/
+# Paths
+SRCDIR   = src/
+TOOLSDIR = tools/
+FSDIR    = fs/
+
+VPATH  = $(SRCDIR) $(TOOLSDIR) $(FSDIR)
 
 # C files
 CSOURCES =                        \
@@ -19,7 +23,9 @@ CSOURCES =                        \
 	$(SRCDIR)timer.c              \
 	$(SRCDIR)kernelHeap.c         \
 	$(SRCDIR)paging.c             \
-	$(SRCDIR)orderedArray.c
+	$(SRCDIR)orderedArray.c       \
+	$(SRCDIR)fileSystem.c         \
+	$(SRCDIR)initialRamDisk.c
 COBJECTS =                        \
 	main.o                        \
 	$(SRCDIR)common.o             \
@@ -29,7 +35,9 @@ COBJECTS =                        \
 	$(SRCDIR)timer.o              \
 	$(SRCDIR)kernelHeap.o         \
 	$(SRCDIR)paging.o             \
-	$(SRCDIR)orderedArray.o
+	$(SRCDIR)orderedArray.o       \
+	$(SRCDIR)fileSystem.o         \
+	$(SRCDIR)initialRamDisk.o
 
 # Assembly files
 SSOURCES =                        \
@@ -41,19 +49,22 @@ SOBJECTS =                        \
 	$(SRCDIR)descriptorTables_.o  \
 	$(SRCDIR)interrupts_.o
 
+# Images
+ELF    = kernel
+INITRD = initialRamDisk.img
 
-VPATH = $(SRCDIR)
-ELF   = kernel
-
-# 32 bit
+# 32 bit flags
 CFLAGS  = -nostdlib -nostdinc -fno-builtin -fno-stack-protector -m32 -Wall -g
 ASFLAGS = -f elf -F dwarf -g
 LDFLAGS = -T link.ld -m elf_i386
 
-# 64 bit
+# 64 bit flags
 # CFLAGS  = -nostdlib -nostdinc -fno-builtin -fno-stack-protector -Wall -g
 # ASFLAGS = -f elf64 -F dwarf -g
 # LDFLAGS = -T link.ld
+
+
+# Generate ELF ----------------------
 
 all:
 
@@ -62,6 +73,8 @@ all:
 	@echo "Making all the things!"
 
 	make _all
+
+	# make fs
 
 _all: $(SOBJECTS) $(COBJECTS) link
 
@@ -90,6 +103,20 @@ link:
 	gcc -c $(CFLAGS) $< -o $@
 
 
+# Generate initrd -------------------
+
+# fs:
+
+# 	@echo "Generating initialRamDisk ..."
+
+# 	gcc -Wall $(TOOLSDIR)generateInitialRamDisk.c -o $(TOOLSDIR)generateInitialRamDisk.o
+# 	# ./generateInitialRamDisk.o srcFilea1 dstFile 1 scrFile2 dstFile2 ...
+# 	$(TOOLSDIR)generateInitialRamDisk.o hello.txt hello.txt song.txt song.txt
+
+# First manualy specify files...
+# Then see if can automate reading dir
+
+
 # Run QEMU --------------------------
 
 # Path to QEMU
@@ -98,6 +125,12 @@ QEMU = qemu-system-i386
 # Flags
 QEMUOPTS = -kernel $(ELF)
 # QEMUOPTS = -kernel $(ELF) -D logfile -d cpu_reset
+
+# CPUS := 2
+# -drive file=fs.img, index=1,media=disk,format=raw
+# -drive file=xv6.img,index=0,media=disk,format=raw
+# -smp $(CPUS) -m 512 $(QEMUEXTRA)
+
 
 # Try to generate a unique GDB port
 GDBPORT = $(shell expr `id -u` % 5000 + 25000)

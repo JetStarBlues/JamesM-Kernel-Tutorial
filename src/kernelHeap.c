@@ -164,7 +164,6 @@ heap_t *create_heap ( u32int start, u32int end, u32int max, u8int supervisor, u8
 
 	// Initialize the index
 	heap -> index = orderedArray_place( ( void * ) start, HEAP_INDEX_SIZE, &header_t_less_than );
-monitor_write( "oy vey!\n" );
 
 	// Shift the start address forward to resemble where we can start putting data
 	start += sizeof( type_t ) * HEAP_INDEX_SIZE;
