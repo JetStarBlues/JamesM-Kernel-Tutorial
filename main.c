@@ -112,7 +112,7 @@ int testFileSystem ( struct multiboot *mboot_ptr )  // section 8
 	ASSERT( mboot_ptr -> mods_count > 0 );
 
 	u32int initrd_location = *( ( u32int * ) mboot_ptr -> mods_addr );
-	u32int initrd_end      = *( ( u32int * ) mboot_ptr -> mods_addr + 4 );
+	u32int initrd_end      = *( ( u32int * ) ( mboot_ptr -> mods_addr + 4 ) );
 
 	// Don't trample our module with placement accesses
 	placement_address = initrd_end;
@@ -135,13 +135,14 @@ int testFileSystem ( struct multiboot *mboot_ptr )  // section 8
 	{
 		monitor_write( "Found file " );
 		monitor_write( node->name );
+		monitor_writeln();
 		
 		fs_node_t *fsnode = finddir_fs( fs_root, node->name );
 
 		// Node is a directory
 		if ( ( fsnode -> flags & 0x7 ) == FS_FLAG_DIRECTORY )
 		{
-			monitor_write( "\n\t(directory)\n" );
+			monitor_write( "(directory)\n\n" );
 		}
 
 		// Node is a file
@@ -150,7 +151,7 @@ int testFileSystem ( struct multiboot *mboot_ptr )  // section 8
 			int j;
 			char buf[ 256 ];
 			
-			monitor_write( "\n\t contents: \"" );
+			monitor_write( "__contents__\n" );
 			
 			u32int sz = read_fs( fsnode, 0, 256, ( u8int * ) buf );
 			
@@ -159,10 +160,13 @@ int testFileSystem ( struct multiboot *mboot_ptr )  // section 8
 				monitor_put( buf[ j ] );
 			}
 
-			monitor_write( "\"\n" );
+			monitor_write( "\n" );
 		}
 
 		i += 1;
+
+		node = readdir_fs( fs_root, i );
+
 	}
 
 	return 0;

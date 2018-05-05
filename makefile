@@ -118,13 +118,9 @@ QEMU = qemu-system-i386
 
 # Flags
 # QEMUOPTS = -kernel $(ELF)
-QEMUOPTS = -kernel $(ELF) -initrd $(INITRD)
 # QEMUOPTS = -kernel $(ELF) -D logfile -d cpu_reset
-
-# CPUS := 2
-# -drive file=fs.img, index=1,media=disk,format=raw
-# -drive file=xv6.img,index=0,media=disk,format=raw
-# -smp $(CPUS) -m 512 $(QEMUEXTRA)
+QEMUOPTS = -kernel $(ELF) -initrd $(INITRD)
+# QEMUOPTS = -kernel $(ELF) -initrd $(INITRD) -D logfile -d cpu_reset
 
 
 # Try to generate a unique GDB port
@@ -161,7 +157,7 @@ qemu-nox:
 
 	@echo "Starting QEMU ..."
 
-	$(QEMU) -nographic $(QEMUOPTS)
+	$(QEMU) -nographic -monitor stdio $(QEMUOPTS)
 
 qemu-gdb:
 

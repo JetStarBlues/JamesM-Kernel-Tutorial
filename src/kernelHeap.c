@@ -8,7 +8,7 @@
 // end is defined in the linker script?
 extern u32int end;
 
-u32int placement_address = ( u32int ) &end;  // ??
+u32int placement_address = ( u32int ) &end;  // default??
 
 extern page_directory_t *kernel_directory;
 

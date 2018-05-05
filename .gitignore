@@ -5,3 +5,6 @@ initialRamDisk.img
 raw/
 logfile
 temp
+gdb.txt
+
+*swp
