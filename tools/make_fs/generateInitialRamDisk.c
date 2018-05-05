@@ -8,7 +8,7 @@
 	Description:
 	[quote = http://www.jamesmolloy.co.uk/tutorial_html/8.-The%20VFS%20and%20the%20initrd.html]
 		My format does not support subdirectories.
-		It stores the number of files in the system as the first 4 bytes
+		It stores the number of files in the system as the first 4 bytes ( sizeof(int) )
 		of the initrd file.
 		That is followed by a set number (64) of header structures, giving the
 		names, offsets and sizes of the files contained.
@@ -20,79 +20,111 @@
 #include <string.h>
 #include <stdlib.h>
 
+#define MAX_NFILES     64
+#define MAGIC          0xBF
+#define FILE_NAME_SIZE 128
+
 const char *imagePath = "../../initialRamDisk.img";
 const char *srcFSPath;
 
+// mirrors declaration in 'initialRamDisk.h'
 struct initrd_header
 {
 	unsigned char magic;
-	char          name [ 64 ];
-	unsigned int  offset;  // ?
-	unsigned int  length;  // length of file
+	char          name [ FILE_NAME_SIZE ];
+	unsigned int  offset;
+	unsigned int  length;
 };
 
 int main ( int argc, char **argv )
 {
-	int i;
-	int sz_initrd_header;
+	int   i;
+	int   sz_initrd_header;
 	char* dstFile;
-	char srcFile [ 300 ];
+	char  srcFile [ FILE_NAME_SIZE ];
+
+	int   contentSize;
+	int   headerSize;
+	int   fileSize;
 
 	srcFSPath = argv[ 1 ];
-	// printf( "%s\n", srcFSPath );
+	// printf( "Source path: %s\n", srcFSPath );
 
-	int nheaders = argc - 2;
+	int nHeaders = argc - 2;  // number of files/dirs
 
-	struct initrd_header headers[ 64 ];
+	struct initrd_header headers[ MAX_NFILES ];
 
 	sz_initrd_header = sizeof( struct initrd_header );
+	// printf( "Size of header: %d\n", sz_initrd_header );
 
-	printf( "Size of header: %d\n", sz_initrd_header );
+	unsigned int offset = sz_initrd_header * MAX_NFILES + sizeof( int );
 
-	unsigned int offset = sz_initrd_header * 64 + sizeof( int );
-
-	for ( i = 0; i < nheaders; i += 1 )
+	// Prepare header for each file
+	// for ( i = 0; i < nHeaders; i += 1 )
+	for ( i = 0; i < MAX_NFILES; i += 1 )
 	{
-		dstFile = argv[ 2 + i ];
-
-		strcpy( srcFile, srcFSPath );
-		strcat( srcFile, dstFile );
-
-		printf( "Writing file %s to %s at 0x%x\n", srcFile, dstFile, offset );
-
-		strcpy( headers[ i ].name, dstFile );
-
-		headers[ i ].offset = offset;
-
-		FILE *stream = fopen( srcFile, "r" );
-
-		if ( stream == 0 )
+		if ( i < nHeaders )
 		{
-			printf( "Error: file not found: %s\n", srcFile );
+			dstFile = argv[ 2 + i ];
 
-			return 1;
+			strcpy( srcFile, srcFSPath );
+			strcat( srcFile, dstFile );
+
+			printf( "Writing file %s to %s at 0x%x\n", srcFile, dstFile, offset );
+
+			// Set name
+			strcpy( headers[ i ].name, dstFile );
+
+			// Set offset
+			headers[ i ].offset = offset;
+
+			// Set length
+			FILE *stream = fopen( srcFile, "r" );
+
+			if ( stream == 0 )
+			{
+				printf( "Error: file not found: %s\n", srcFile );
+
+				return 1;
+			}
+
+			fseek( stream, 0, SEEK_END );
+
+			headers[ i ].length = ftell( stream );
+
+			fclose( stream );
+
+			// Set magic number
+			headers[ i ].magic = MAGIC;
+
+			//
+			offset += headers[ i ].length;
 		}
 
-		fseek( stream, 0, SEEK_END );
-
-		headers[ i ].length = ftell( stream );
-
-		offset += headers[ i ].length;
-
-		fclose( stream );
-
-		headers[ i ].magic = 0xBF;
+		// Unused, init with zeros
+		else
+		{
+			memset( headers[ i ].name, 0, FILE_NAME_SIZE );  // not sure why not always all filled w zeros
+			headers[ i ].offset = 0;
+			headers[ i ].length = 0;
+			headers[ i ].magic  = MAGIC;
+		}
 	}
 
+
+	// Begin writing image
 	FILE *wstream = fopen( imagePath, "w" );
 
-	unsigned char *data = ( unsigned char * ) malloc( offset );
 
-	fwrite( &nheaders, sizeof( int ), 1, wstream );
+	// Write number of files
+	fwrite( &nHeaders, sizeof( int ), 1, wstream );
 
-	fwrite( headers, sz_initrd_header, 64, wstream );
+	// Write file headers
+	fwrite( headers, sz_initrd_header, MAX_NFILES, wstream );
 
-	for ( i = 0; i < nheaders; i += 1 )
+	// Write file contents
+	contentSize = 0;
+	for ( i = 0; i < nHeaders; i += 1 )
 	{
 		dstFile = argv[ 2 + i ];
 
@@ -100,6 +132,8 @@ int main ( int argc, char **argv )
 		strcat( srcFile, dstFile );
 
 		FILE *stream = fopen( srcFile, "r" );
+
+		// printf("file %s, bytes %d\n", dstFile, headers[ i ].length );
 
 		unsigned char *buf = ( unsigned char * ) malloc( headers[ i ].length );
 
@@ -110,11 +144,22 @@ int main ( int argc, char **argv )
 		fclose( stream );
 
 		free( buf );
+
+		contentSize += headers[ i ].length;
 	}
 
 	fclose( wstream );
 
-	free( data );
+
+	// Report
+	headerSize = sz_initrd_header * MAX_NFILES;
+	fileSize = sizeof( int ) + headerSize + contentSize;
+
+	printf( "Image is %d bytes long:\n", fileSize );
+	printf( "  nFiles        uses %lu bytes\n", sizeof( int ) );
+	printf( "  file headers  use  %d bytes\n", headerSize );
+	printf( "  file contents use  %d bytes\n", contentSize );
+
 
 	return 0;
 }

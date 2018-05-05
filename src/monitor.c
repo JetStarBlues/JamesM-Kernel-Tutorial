@@ -57,9 +57,9 @@ u16int m_attribute = ( ( BGCOLOR << 4 ) | ( FGCOLOR & 0x0F ) ) << 8;
 // Updates the hardware cursor
 static void move_cursor ()
 {
-	// For some reason VGA accepts 16-bit location as two bytes
-
 	u16int cursorLocation = cursorY * NCOLS + cursorX;
+
+	// For some reason VGA accepts 16-bit location as two bytes
 	outb( 0x3D4, 14 );                   // Tell VGA we are setting the high cursor byte
 	outb( 0x3D5, cursorLocation >> 8 );  // Send the high cursor byte
 	outb( 0x3D4, 15 );                   // Tell VGA we are setting the low byte

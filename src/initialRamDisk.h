@@ -13,10 +13,10 @@ initrd_header_t;
 
 typedef struct
 {
-	u8int  magic;       // Magic number, for error checking
-	s8int  name[ 64 ];  // Filename
-	u32int offset;      // Offset in the initrd that the file starts
-	u32int length;      // Length of the file
+	u8int  magic;         // Magic number, for error checking
+	s8int  name [ 128 ];  // Filename
+	u32int offset;        // Offset in the initrd that the file starts
+	u32int length;        // Length of the file
 }
 initrd_file_header_t;
 

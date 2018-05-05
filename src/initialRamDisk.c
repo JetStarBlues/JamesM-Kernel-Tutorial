@@ -168,16 +168,28 @@ fs_node_t *initialise_initrd ( u32int location )
 		*/
 		file_headers[ i ].offset += location;
 
-		// TODO.. somehow distinguish if dir, and call initialise_dir() instead
+		// Very hacky, assume that dirs always have length 512...
+		if ( file_headers[ i ].length == 512 )
+		{
+			// Initialise the directory
+			initialise_dir(
 
-		// Initialise the file
-		initialise_file(
+				&root_nodes[ i ],                         // file
+				( const char * ) &file_headers[ i ].name  // name
+				// i                                         // inode number
+			);
+		}
+		else
+		{
+			// Initialise the file
+			initialise_file(
 
-			&root_nodes[ i ],                          // file
-			( const char * ) &file_headers[ i ].name,  // name
-			file_headers[ i ].length,                  // length
-			i                                          // inode number
-		);
+				&root_nodes[ i ],                          // file
+				( const char * ) &file_headers[ i ].name,  // name
+				file_headers[ i ].length,                  // length
+				i                                          // inode number
+			);
+		}
 	}
 
 	//
