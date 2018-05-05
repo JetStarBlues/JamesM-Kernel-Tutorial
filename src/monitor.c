@@ -36,18 +36,30 @@
 	VGA's control register 0x3D4 and data register 0x3D5 are used to update the cursor position
 */
 
+//
+#define NCOLS   80
+#define NROWS   25
+#define BGCOLOR 0   // black
+#define FGCOLOR 15  // white
+
 // VGA framebuffer starts at 0xB8000
 u16int *videoMemory = ( u16int * ) 0xB8000;
 
+// cursor position
 u8int cursorX = 0;
 u8int cursorY = 0;
+
+// default colors
+// u8int  m_attributeByte = ( BGCOLOR << 4 ) | ( FGCOLOR & 0x0F );  // hi byte of word have to send to VGA
+u16int m_attribute = ( ( BGCOLOR << 4 ) | ( FGCOLOR & 0x0F ) ) << 8;
+
 
 // Updates the hardware cursor
 static void move_cursor ()
 {
 	// For some reason VGA accepts 16-bit location as two bytes
 
-	u16int cursorLocation = cursorY * 80 + cursorX;
+	u16int cursorLocation = cursorY * NCOLS + cursorX;
 	outb( 0x3D4, 14 );                   // Tell VGA we are setting the high cursor byte
 	outb( 0x3D5, cursorLocation >> 8 );  // Send the high cursor byte
 	outb( 0x3D4, 15 );                   // Tell VGA we are setting the low byte
@@ -55,44 +67,39 @@ static void move_cursor ()
 }
 
 // Scrolls the text on the screen up by one line
-static void scroll ()
+static void scrollUp ()
 {
-	// Get a space character with the default color attributes
-	u8int  bgColor = 0;   // black
-	u8int  fgColor = 15;  // white
-	u8int  attributeByte = ( bgColor << 4 ) | ( fgColor & 0x0F );  // hi byte of word have to send to VGA
-	u16int space = ( attributeByte << 8 ) | 0x20;  // space character
+	int i;
+	int lastRow = NROWS - 1;
 
-	if ( cursorY >= 25 )
+	u16int spaceChar = m_attribute | 0x20;  // space character
+
+	// Move the current text chunk that makes up the screen back in the buffer by a line
+	for ( i = 0; i < NROWS * NCOLS; i += 1 )
 	{
-		// Move the current text chunk that makes up the screen back in the buffer by a line
-		int i;
-		for ( i = 0; i < 25 * 80; i += 1 )
-		{
-			videoMemory[ i ] = videoMemory[ i + 80 ];
-		}
-
-		// The last line should now be blank. Do this by writing 80 spaces to it
-		for ( i = 24 * 80; i < 25 * 80; i += 1 )
-		{
-			videoMemory[ i ] = space;
-		}
-
-		// The cursor should now be on the last line
-		cursorY = 24;
+		videoMemory[ i ] = videoMemory[ i + NCOLS ];
 	}
+
+	// The last line should now be blank. Do this by writing 80 spaces to it
+	for ( i = lastRow * NCOLS; i < NROWS * NCOLS; i += 1 )
+	{
+		videoMemory[ i ] = spaceChar;
+	}
+
+	// The cursor should now be on the last line
+	cursorY = lastRow;
+}
+
+// Scrolls the text on the screen down by one line
+static void scrollDown ()
+{
+	//
 }
 
 // Write a single character out to the screen
 void monitor_put ( char c )
 {
 	u16int *location;
-
-	// Setup colors
-	u8int  bgColor = 0;   // black
-	u8int  fgColor = 15;  // white
-	u8int  attributeByte = ( bgColor << 4 ) | ( fgColor & 0x0F );  // hi byte of word have to send to VGA
-	u16int attribute = attributeByte << 8;
 
 	// Handle a backspace
 	if ( c == 0x08 && cursorX )
@@ -122,22 +129,25 @@ void monitor_put ( char c )
 	// Handle any other printable character
 	else if ( c >= ' ' && c < 127 )
 	{
-		location = videoMemory + ( cursorY * 80 + cursorX );
+		location = videoMemory + ( cursorY * NCOLS + cursorX );
 
-		*location = attribute | c;
+		*location = m_attribute | c;
 
 		cursorX += 1;
 	}
 
 	// Check if we need to inser a new line because we've reached the end of the screen
-	if ( cursorX >= 80 )
+	if ( cursorX >= NCOLS )
 	{
 		cursorX = 0;
 		cursorY += 1;
 	}
 
 	// Scroll the screen if needed
-	scroll();
+	if ( cursorY >= NROWS )
+	{
+		scrollUp();
+	}
 
 	// Move the hardware cursor
 	move_cursor();
@@ -146,17 +156,14 @@ void monitor_put ( char c )
 // Clear the screen to all black by writting spaces to the framebuffer
 void monitor_clear ()
 {
-	// Get a space character with the default color attributes
-	u8int  bgColor = 0;   // black
-	u8int  fgColor = 15;  // white
-	u8int  attributeByte = ( bgColor << 4 ) | ( fgColor & 0x0F );  // hi byte of word have to send to VGA
-	u16int space = ( attributeByte << 8 ) | 0x20;  // space character
+	int i;
+
+	u16int spaceChar = m_attribute | 0x20;  // space character
 
 	// Fill buffer with spaces
-	int i;
-	for ( i = 0; i < 25 * 80; i += 1 )
+	for ( i = 0; i < NROWS * NCOLS; i += 1 )
 	{
-		videoMemory[ i ] = space;
+		videoMemory[ i ] = spaceChar;
 	}
 
 	// Move the hardware cursor back to the start
@@ -186,11 +193,11 @@ void monitor_writeln ()
 void monitor_write_hex ( u32int n )
 {
 	s32int tmp;
+	int i;
 
 	monitor_write( "0x" );
 
 	char noZeroes = 1;
-	int i;
 
 	for ( i = 28; i > 0; i -= 4 )
 	{
@@ -232,6 +239,7 @@ void monitor_write_dec ( u32int n )
 	char  c [ 32 ];
 	char c2 [ 32 ];
 	int i;
+	int j;
 
 	if ( n == 0 )
 	{
@@ -257,7 +265,7 @@ void monitor_write_dec ( u32int n )
 	i -= 1;
 
 	// Reverse order so that MSD stored at index 0 ?
-	int j = 0;
+	j = 0;
 	while ( i >= 0 )
 	{
 		c2[ i ] = c[ j ];

@@ -3,6 +3,7 @@
 
 
 #include "common.h"
+#include "../multiboot.h"
 
 #define FS_FLAG_FILE        0x01  // is a file
 #define FS_FLAG_DIRECTORY   0x02  // is a directory
@@ -70,6 +71,9 @@ void   close_fs ( fs_node_t *node );
 //
 struct dirent *readdir_fs ( fs_node_t *node, u32int index );
 fs_node_t     *finddir_fs ( fs_node_t *node, char *name );
+
+//
+void initialise_fileSystem ( struct multiboot *mboot_ptr );
 
 
 #endif  // FILE_SYSTEM_H

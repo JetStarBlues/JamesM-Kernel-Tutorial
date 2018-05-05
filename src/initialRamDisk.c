@@ -14,7 +14,7 @@ int                  nroot_nodes;     // Number of file nodes
 struct dirent        dirent;
 
 //
-static u32int initrd_read ( fs_node_t *node, u32int offset, u32int size, u8int *buffer )
+static u32int read_initrd ( fs_node_t *node, u32int offset, u32int size, u8int *buffer )
 {
 	initrd_file_header_t header = file_headers[ node -> inode ];
 
@@ -34,7 +34,7 @@ static u32int initrd_read ( fs_node_t *node, u32int offset, u32int size, u8int *
 }
 
 //
-static struct dirent *initrd_readdir ( fs_node_t *node, u32int index )
+static struct dirent *readdir_initrd ( fs_node_t *node, u32int index )
 {
 	char *s;
 
@@ -66,7 +66,7 @@ static struct dirent *initrd_readdir ( fs_node_t *node, u32int index )
 }
 
 //
-static fs_node_t *initrd_finddir ( fs_node_t *node, char *name )
+static fs_node_t *finddir_initrd ( fs_node_t *node, char *name )
 {
 	int i;
 
@@ -86,10 +86,60 @@ static fs_node_t *initrd_finddir ( fs_node_t *node, char *name )
 	return 0;
 }
 
+// Setup default values for a directory
+static void initialise_dir ( fs_node_t* dir, const char *name )
+{
+	strcpy( dir -> name, name );
+
+	dir -> mask    = 0;
+	dir -> uid     = 0;
+	dir -> gid     = 0;
+	dir -> inode   = 0;
+	dir -> length  = 0;
+
+	dir -> read    = 0;
+	dir -> write   = 0;
+	dir -> open    = 0;
+	dir -> close   = 0;
+
+	dir -> flags   = FS_FLAG_DIRECTORY;
+
+	dir -> readdir = &readdir_initrd;
+	dir -> finddir = &finddir_initrd;
+
+	dir -> impl    = 0;
+	dir -> ptr     = 0;
+}
+
+// Setup default values for a file
+static void initialise_file ( fs_node_t* file, const char *name, u32int length, u32int inodeNumber )
+{
+	strcpy( file -> name, name );
+
+	file -> mask    = 0;
+	file -> uid     = 0;
+	file -> gid     = 0;
+	file -> inode   = inodeNumber;
+	file -> length  = length;
+
+	file -> read    = &read_initrd;
+	file -> write   = 0;
+	file -> open    = 0;
+	file -> close   = 0;
+
+	file -> flags   = FS_FLAG_FILE;
+
+	file -> readdir = 0;
+	file -> finddir = 0;
+
+	file -> impl    = 0;
+	file -> ptr     = 0;
+}
+
 // Initialise the main and file header pointers and populate the root directory
 fs_node_t *initialise_initrd ( u32int location )
 {
-	int i;
+	u32int i;
 
 	// Initialise the main and file header pointers
 	initrd_header = ( initrd_header_t * ) location;
@@ -98,52 +148,12 @@ fs_node_t *initialise_initrd ( u32int location )
 
 	// Initialise the root directory
 	initrd_root = ( fs_node_t * ) kmalloc( sizeof( fs_node_t ) );
-
-	strcpy( initrd_root -> name, "root" );
-
-	initrd_root -> mask    = 0;
-	initrd_root -> uid     = 0;
-	initrd_root -> gid     = 0;
-	initrd_root -> inode   = 0;
-	initrd_root -> length  = 0;
-
-	initrd_root -> read    = 0;
-	initrd_root -> write   = 0;
-	initrd_root -> open    = 0;
-	initrd_root -> close   = 0;
-
-	initrd_root -> flags   = FS_FLAG_DIRECTORY;
-
-	initrd_root -> readdir = &initrd_readdir;
-	initrd_root -> finddir = &initrd_finddir;
-
-	initrd_root -> impl    = 0;
-	initrd_root -> ptr     = 0;
+	initialise_dir( initrd_root, "root" );
 
 
 	// Initialise the /dev directory
 	initrd_dev = ( fs_node_t * ) kmalloc( sizeof( fs_node_t ) );
-
-	strcpy( initrd_dev -> name, "dev" );
-
-	initrd_dev -> mask    = 0;
-	initrd_dev -> uid     = 0;
-	initrd_dev -> gid     = 0;
-	initrd_dev -> inode   = 0;
-	initrd_dev -> length  = 0;
-
-	initrd_dev -> read    = 0;
-	initrd_dev -> write   = 0;
-	initrd_dev -> open    = 0;
-	initrd_dev -> close   = 0;
-
-	initrd_dev -> flags   = FS_FLAG_DIRECTORY;
-
-	initrd_dev -> readdir = &initrd_readdir;
-	initrd_dev -> finddir = &initrd_finddir;
-
-	initrd_dev -> impl    = 0;
-	initrd_dev -> ptr     = 0;
+	initialise_dir( initrd_dev, "dev" );
 
 
 	//
@@ -158,27 +168,16 @@ fs_node_t *initialise_initrd ( u32int location )
 		*/
 		file_headers[ i ].offset += location;
 
-		// Create a new file node
-		strcpy( root_nodes[ i ].name, ( const char * ) &file_headers[ i ].name );
+		// TODO.. somehow distinguish if dir, and call initialise_dir() instead
 
-		root_nodes[ i ].mask    = 0;
-		root_nodes[ i ].uid     = 0;
-		root_nodes[ i ].gid     = 0;
-		root_nodes[ i ].inode   = i;
-		root_nodes[ i ].length  = file_headers[ i ].length;
+		// Initialise the file
+		initialise_file(
 
-		root_nodes[ i ].read    = &initrd_read;
-		root_nodes[ i ].write   = 0;
-		root_nodes[ i ].open    = 0;
-		root_nodes[ i ].close   = 0;
-
-		root_nodes[ i ].flags   = FS_FLAG_FILE;
-
-		root_nodes[ i ].readdir = 0;
-		root_nodes[ i ].finddir = 0;
-
-		root_nodes[ i ].impl    = 0;
-		root_nodes[ i ].ptr     = 0;
+			&root_nodes[ i ],                          // file
+			( const char * ) &file_headers[ i ].name,  // name
+			file_headers[ i ].length,                  // length
+			i                                          // inode number
+		);
 	}
 
 	//

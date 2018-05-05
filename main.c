@@ -7,10 +7,8 @@
 #include "src/timer.h"
 #include "src/paging.h"
 #include "src/kernelHeap.h"
-#include "multiboot.h"
-#include "src/initialRamDisk.h"
+#include "src/fileSystem.h"
 
-extern u32int placement_address;
 
 u32int tick = 0;
 
@@ -108,22 +106,8 @@ int testHeap ()  // section 7
 
 int testFileSystem ( struct multiboot *mboot_ptr )  // section 8
 {
-	// Find the location of our initial ramdisk
-	ASSERT( mboot_ptr -> mods_count > 0 );
-
-	u32int initrd_location = *( ( u32int * ) mboot_ptr -> mods_addr );
-	u32int initrd_end      = *( ( u32int * ) ( mboot_ptr -> mods_addr + 4 ) );
-
-	// Don't trample our module with placement accesses
-	placement_address = initrd_end;
-
-	// Initialise paging
-	initialise_paging();
-
-	// Initialise the initial ramdisk, and set it as the filesystem root
-	fs_root = initialise_initrd( initrd_location );
-
-// TODO: Move all above to initialise_fileSystem()
+	// Initialize filesystem. Also initializes paging.
+	initialise_fileSystem( mboot_ptr );
 
     // list the contents of /
 	int i = 0;
@@ -134,10 +118,10 @@ int testFileSystem ( struct multiboot *mboot_ptr )  // section 8
 	while ( node != 0 )
 	{
 		monitor_write( "Found file " );
-		monitor_write( node->name );
+		monitor_write( node -> name );
 		monitor_writeln();
 		
-		fs_node_t *fsnode = finddir_fs( fs_root, node->name );
+		fs_node_t *fsnode = finddir_fs( fs_root, node -> name );
 
 		// Node is a directory
 		if ( ( fsnode -> flags & 0x7 ) == FS_FLAG_DIRECTORY )
@@ -149,18 +133,18 @@ int testFileSystem ( struct multiboot *mboot_ptr )  // section 8
 		else
 		{
 			int j;
-			char buf[ 256 ];
+			char buffer[ 256 ];
 			
 			monitor_write( "__contents__\n" );
 			
-			u32int sz = read_fs( fsnode, 0, 256, ( u8int * ) buf );
+			u32int size = read_fs( fsnode, 0, 256, ( u8int * ) buffer );
 			
-			for ( j = 0; j < sz; j += 1 )
+			for ( j = 0; j < size; j += 1 )
 			{
-				monitor_put( buf[ j ] );
+				monitor_put( buffer[ j ] );
 			}
 
-			monitor_write( "\n" );
+			monitor_write( "\n\n" );
 		}
 
 		i += 1;

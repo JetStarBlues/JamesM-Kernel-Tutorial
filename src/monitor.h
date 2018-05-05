@@ -4,12 +4,6 @@
 
 #include "common.h"
 
-// Updates the hardware cursor
-// static void move_cursor ();
-
-// Scrolls the text on the screen up by one line
-// static void scroll ();
-
 // Write a single character out to the screen
 void monitor_put ( char c );
 

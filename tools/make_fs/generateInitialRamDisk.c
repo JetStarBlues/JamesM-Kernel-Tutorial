@@ -1,8 +1,21 @@
 /*
 	Usage:
 		gcc -Wall generateInitialRamDisk.c -o generateInitialRamDisk.o
-		./generateInitialRamDisk.o srcFilePath srcFilea1 scrFile2
+		./generateInitialRamDisk.o srcFilePath srcFile1 scrFile2
 */
+
+/*
+	Description:
+	[quote = http://www.jamesmolloy.co.uk/tutorial_html/8.-The%20VFS%20and%20the%20initrd.html]
+		My format does not support subdirectories.
+		It stores the number of files in the system as the first 4 bytes
+		of the initrd file.
+		That is followed by a set number (64) of header structures, giving the
+		names, offsets and sizes of the files contained.
+		The actual file data follows.
+	[/quote]
+*/
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -105,4 +118,3 @@ int main ( int argc, char **argv )
 
 	return 0;
 }
-
