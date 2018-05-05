@@ -3,13 +3,11 @@
 No display
 * exit: `ctrl-a + x`
 
-Curses display
+Curses as display
 * exit:
 	* `esc+2` to switch to qemu command line
 	* Then type `q` and press `enter`
 
-
----
 
 # GDB
 
