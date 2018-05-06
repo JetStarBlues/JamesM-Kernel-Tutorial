@@ -98,10 +98,7 @@ void scrollUp ()
 // Scrolls the text on the screen down by one line
 void scrollDown ()
 {
-	// Seems text buffer is exactly 80x25...
-	// So if want history, need a separate buffer that is bigger
-	// Which means monitor functions will no longer be independent of
-	// malloc code.
+	// TODO
 }
 
 // Write a single character out to the screen
