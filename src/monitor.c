@@ -42,8 +42,13 @@
 #define BGCOLOR 0   // black
 #define FGCOLOR 15  // white
 
+// #define NROWS_HISTORY NROWS * 5
+
 // VGA framebuffer starts at 0xB8000
 u16int *videoMemory = ( u16int * ) 0xB8000;
+
+//
+// u16int *textBuffer [ NCOLS * NROWS * 5 ];  // history
 
 // cursor position
 u8int cursorX = 0;
@@ -67,7 +72,7 @@ static void move_cursor ()
 }
 
 // Scrolls the text on the screen up by one line
-static void scrollUp ()
+void scrollUp ()
 {
 	int i;
 	int lastRow = NROWS - 1;
@@ -91,9 +96,12 @@ static void scrollUp ()
 }
 
 // Scrolls the text on the screen down by one line
-static void scrollDown ()
+void scrollDown ()
 {
-	//
+	// Seems text buffer is exactly 80x25...
+	// So if want history, need a separate buffer that is bigger
+	// Which means monitor functions will no longer be independent of
+	// malloc code.
 }
 
 // Write a single character out to the screen

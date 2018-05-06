@@ -156,6 +156,59 @@ int testFileSystem ( struct multiboot *mboot_ptr )  // section 8
 	return 0;
 }
 
+int testKeyboard ()
+{
+	monitor_write( "[Verse 1]" );
+	monitor_write( "I wanna be the very best" );
+	monitor_write( "Like no one ever was" );
+	monitor_write( "To catch them is my real test" );
+	monitor_write( "To train them is my cause" );
+	monitor_write( "I will travel across the land" );
+	monitor_write( "Searching far and wide" );
+	monitor_write( "Teach Pokémon to understand" );
+	monitor_write( "The power that's inside" );
+
+	monitor_write( "[Chorus]" );
+	monitor_write( "(Pokémon, gotta catch 'em all) It's you and me" );
+	monitor_write( "I know it's my destiny" );
+	monitor_write( "(Pokémon) Oh, you're my best friend" );
+	monitor_write( "In a world we must defend" );
+	monitor_write( "(Pokémon, gotta catch 'em all) A heart so true" );
+	monitor_write( "Our courage will pull us through" );
+	monitor_write( "You teach me and I'll teach you" );
+	monitor_write( "Pokémon! (Gotta catch 'em all) Gotta catch 'em all" );
+
+	monitor_write( "[Verse 2]" );
+	monitor_write( "Every challenge along the way" );
+	monitor_write( "With courage I will face" );
+	monitor_write( "I will battle every day" );
+	monitor_write( "To claim my rightful place" );
+	monitor_write( "Come with me, the time is right" );
+	monitor_write( "There's no better team" );
+	monitor_write( "Arm in arm we'll win the fight" );
+	monitor_write( "It's always been our dream" );
+
+	monitor_write( "[Chorus]" );
+	monitor_write( "(Pokémon, gotta catch 'em all) It's you and me" );
+	monitor_write( "I know it's my destiny" );
+	monitor_write( "(Pokémon) Oh, you're my best friend" );
+	monitor_write( "In a world we must defend" );
+	monitor_write( "(Pokémon, gotta catch 'em all) A heart so true" );
+	monitor_write( "Our courage will pull us through" );
+	monitor_write( "You teach me and I'll teach you" );
+	monitor_write( "Pokémon! (Gotta catch 'em all) Gotta catch 'em all" );
+
+
+	//
+	monitor_scrollDown();
+	monitor_scrollDown();
+	monitor_scrollDown();
+	monitor_scrollDown();
+	monitor_scrollDown();
+	monitor_scrollDown();
+	monitor_scrollUp();
+}
+
 void init ()
 {
 	// Initialize ISRs and segments
@@ -176,5 +229,6 @@ int main ( struct multiboot *mboot_ptr )
 	// return testTimer();
 	// return testPaging();
 	// return testHeap();
-	return testFileSystem( mboot_ptr );
+	// return testFileSystem( mboot_ptr );
+	return testKeyboard();
 }
