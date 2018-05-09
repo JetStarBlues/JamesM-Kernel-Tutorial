@@ -5,10 +5,10 @@
 #include "common.h"
 
 // Scrolls the text on the screen up by one line
-void scrollUp ();
+void monitor_scrollUp ();
 
 // Scrolls the text on the screen down by one line
-void scrollDown ();
+void monitor_scrollDown ();
 
 // Write a single character out to the screen
 void monitor_put ( char c );

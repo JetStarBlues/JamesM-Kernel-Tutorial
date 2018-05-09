@@ -72,7 +72,7 @@ static void move_cursor ()
 }
 
 // Scrolls the text on the screen up by one line
-void scrollUp ()
+void monitor_scrollUp ()
 {
 	int i;
 	int lastRow = NROWS - 1;
@@ -80,7 +80,7 @@ void scrollUp ()
 	u16int spaceChar = m_attribute | 0x20;  // space character
 
 	// Move the current text chunk that makes up the screen back in the buffer by a line
-	for ( i = 0; i < NROWS * NCOLS; i += 1 )
+	for ( i = 0; i < lastRow * NCOLS; i += 1 )
 	{
 		videoMemory[ i ] = videoMemory[ i + NCOLS ];
 	}
@@ -96,7 +96,7 @@ void scrollUp ()
 }
 
 // Scrolls the text on the screen down by one line
-void scrollDown ()
+void monitor_scrollDown ()
 {
 	// TODO
 }
@@ -151,7 +151,7 @@ void monitor_put ( char c )
 	// Scroll the screen if needed
 	if ( cursorY >= NROWS )
 	{
-		scrollUp();
+		monitor_scrollUp();
 	}
 
 	// Move the hardware cursor

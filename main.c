@@ -156,7 +156,7 @@ int testFileSystem ( struct multiboot *mboot_ptr )  // section 8
 	return 0;
 }
 
-int testKeyboard ()
+int testScrolling ()
 {
 	monitor_write( "[Verse 1]\n" );
 	monitor_write( "I wanna be the very best\n" );
@@ -167,7 +167,6 @@ int testKeyboard ()
 	monitor_write( "Searching far and wide\n" );
 	monitor_write( "Teach Pokemon to understand\n" );
 	monitor_write( "The power that's inside\n" );
-
 	monitor_write( "[Chorus]\n" );
 	monitor_write( "(Pokemon, gotta catch 'em all) It's you and me\n" );
 	monitor_write( "I know it's my destiny\n" );
@@ -177,7 +176,6 @@ int testKeyboard ()
 	monitor_write( "Our courage will pull us through\n" );
 	monitor_write( "You teach me and I'll teach you\n" );
 	monitor_write( "Pokemon! (Gotta catch 'em all) Gotta catch 'em all\n" );
-
 	monitor_write( "[Verse 2]\n" );
 	monitor_write( "Every challenge along the way\n" );
 	monitor_write( "With courage I will face\n" );
@@ -185,28 +183,27 @@ int testKeyboard ()
 	monitor_write( "To claim my rightful place\n" );
 	monitor_write( "Come with me, the time is right\n" );
 	monitor_write( "There's no better team\n" );
-	monitor_write( "Arm in arm we'll win the fight\n" );
-	monitor_write( "It's always been our dream\n" );
-
-	monitor_write( "[Chorus]\n" );
-	monitor_write( "(Pokemon, gotta catch 'em all) It's you and me\n" );
-	monitor_write( "I know it's my destiny\n" );
-	monitor_write( "(Pokemon) Oh, you're my best friend\n" );
-	monitor_write( "In a world we must defend\n" );
-	monitor_write( "(Pokemon, gotta catch 'em all) A heart so true\n" );
-	monitor_write( "Our courage will pull us through\n" );
-	monitor_write( "You teach me and I'll teach you\n" );
-	monitor_write( "Pokemon! (Gotta catch 'em all) Gotta catch 'em all\n" );
+	// monitor_write( "Arm in arm we'll win the fight\n" );
+	// monitor_write( "It's always been our dream\n" );
+	// monitor_write( "[Chorus]\n" );
+	// monitor_write( "(Pokemon, gotta catch 'em all) It's you and me\n" );
+	// monitor_write( "I know it's my destiny\n" );
+	// monitor_write( "(Pokemon) Oh, you're my best friend\n" );
+	// monitor_write( "In a world we must defend\n" );
+	// monitor_write( "(Pokemon, gotta catch 'em all) A heart so true\n" );
+	// monitor_write( "Our courage will pull us through\n" );
+	// monitor_write( "You teach me and I'll teach you\n" );
+	// monitor_write( "Pokemon! (Gotta catch 'em all) Gotta catch 'em all\n" );
 
 
 	//
-	// monitor_scrollDown();
-	// monitor_scrollDown();
-	// monitor_scrollDown();
-	// monitor_scrollDown();
-	// monitor_scrollDown();
-	// monitor_scrollDown();
 	// monitor_scrollUp();
+	// monitor_scrollDown();
+	// monitor_scrollDown();
+	// monitor_scrollDown();
+	// monitor_scrollDown();
+	// monitor_scrollDown();
+	// monitor_scrollDown();
 
 	return 0;
 }
@@ -231,6 +228,6 @@ int main ( struct multiboot *mboot_ptr )
 	// return testTimer();
 	// return testPaging();
 	// return testHeap();
-	return testFileSystem( mboot_ptr );
-	// return testKeyboard();
+	// return testFileSystem( mboot_ptr );
+	return testScrolling();
 }
