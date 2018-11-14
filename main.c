@@ -228,6 +228,6 @@ int main ( struct multiboot *mboot_ptr )
 	// return testTimer();
 	// return testPaging();
 	// return testHeap();
-	// return testFileSystem( mboot_ptr );
-	return testScrolling();
+	return testFileSystem( mboot_ptr );
+	// return testScrolling();
 }
