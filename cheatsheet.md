@@ -14,12 +14,14 @@ Curses as display
 Debugging
 * `break`
 	* set breakpoints. Pause execution when reach a point in the code.
-	* examples:	
+	* examples:
 		* `break fxName`
 		* `break *(0xFFFF)`
 		* `break *(fxName+offset)`
 * `watchpoint`
 	* set watchpoints. Pause execution when a value changes.
+	* examples:
+		* `watch varName`
 * `info`
 	* list breakpoints: `info break`
 	* list watchpoints: `info watch`
@@ -39,8 +41,12 @@ Debugging
 	* navigate call stack
 * `print`
 	* print variables
+	* examples:
+		* ...
 * `x`
 	* print memory
+	* examples:
+		* ...
 
 TUI
 * enter or leave TUI mode: `ctrl-x + a`
