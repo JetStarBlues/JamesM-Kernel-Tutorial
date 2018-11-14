@@ -22,6 +22,7 @@ Debugging
 	* set watchpoints. Pause execution when a value changes.
 	* examples:
 		* `watch varName`
+		* ...
 * `info`
 	* list breakpoints: `info break`
 	* list watchpoints: `info watch`
@@ -37,8 +38,6 @@ Debugging
 	* Like `step` but steps over function calls (instead of entering them)
 * `nexti`
 	* ditto
-* `up`, `down`
-	* navigate call stack
 * `print`
 	* print variables
 	* examples:
@@ -47,6 +46,9 @@ Debugging
 	* print memory
 	* examples:
 		* ...
+* `up`, `down`
+	* navigate call stack
+* `quit`
 
 TUI
 * enter or leave TUI mode: `ctrl-x + a`
