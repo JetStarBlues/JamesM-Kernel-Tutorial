@@ -18,7 +18,7 @@ Debugging
 		* `break fxName`
 		* `break *(0xFFFF)`
 		* `break *(fxName+offset)`
-* `watchpoint`
+* `watch`
 	* set watchpoints. Pause execution when a value changes.
 	* examples:
 		* `watch varName`
@@ -46,6 +46,8 @@ Debugging
 	* print memory
 	* examples:
 		* ...
+* `backtrace`
+	* show call stack
 * `up`, `down`
 	* navigate call stack
 * `quit`
@@ -62,3 +64,14 @@ Trace commands
 	* `set trace-commands on`
 	* `set logging on`
 * On another console/terminal, type `tail -f gdb.txt` to view the file in realtime
+
+More
+* Online manual([old][1], [new][2])
+
+
+
+
+
+
+[1]: https://ftp.gnu.org/old-gnu/Manuals/gdb/html_node/gdb_toc.html
+[2]: https://sourceware.org/gdb/onlinedocs/gdb/index.html
