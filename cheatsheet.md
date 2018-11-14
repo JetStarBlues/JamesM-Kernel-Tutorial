@@ -66,7 +66,7 @@ Trace commands
 * On another console/terminal, type `tail -f gdb.txt` to view the file in realtime
 
 More
-* Online manual([old][1], [new][2])
+* Official manual: [old][1], [new][2]
 
 
 
