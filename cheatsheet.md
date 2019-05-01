@@ -59,8 +59,11 @@ Floating point
 	* `p $st1`
 	* `p { $st0, $st1, $st2, $st3, $st4, $st5, $st6, $st7 }`
 	* `info float`
-* Examine float variable (DQ)
+* Examine float variable
 	* `p {double} &varName`
+		* DQ, double precision
+	* `p {float} &varName`
+		* DW, single precision
 
 TUI
 * enter or leave TUI mode: `ctrl-x + a`
@@ -86,7 +89,7 @@ Disassembly
 	* disassemble all sections
 * `-d`
 	* disassemble .text
-* `M intel`
+* `-M intel`
 	* use intel syntax in disassembly
 * `-D -b binary -m i386`
 	* disassemble unkown binary using i386 ISA
@@ -100,7 +103,7 @@ Hex dump
 
 # readelf
 
-* `a`
+* `-a`
 	* all
 
 
