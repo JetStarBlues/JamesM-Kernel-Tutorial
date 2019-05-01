@@ -29,23 +29,23 @@ typedef struct fs_node * ( *finddir_type_t ) ( struct fs_node*, char *name );
 //
 typedef struct fs_node
 {
-	char           name[ 128 ];  // filename
-	u32int         mask;         // permissions mask
-	u32int         uid;          // owning user
-	u32int         gid;          // owning group
-	u32int         flags;        // see #defines above
-	u32int         inode;        // device-specific. Provides a way for a filesystem to identify files
-	u32int         length;       // size of the file in bytes
-	u32int         impl;         // an implementation-defined number ?
+	char            name [ 128 ];  // filename
+	u32int          mask;          // permissions mask
+	u32int          uid;           // owning user
+	u32int          gid;           // owning group
+	u32int          flags;         // see #defines above
+	u32int          inode;         // device-specific. Provides a way for a filesystem to identify files
+	u32int          length;        // size of the file in bytes
+	u32int          impl;          // an implementation-defined number ?
 
-	read_type_t    read;         // fx pointer
-	write_type_t   write;        // fx pointer
-	open_type_t    open;         // fx pointer
-	close_type_t   close;        // fx pointer
-	readdir_type_t readdir;      // fx pointer
-	finddir_type_t finddir;      // fx pointer
+	read_type_t     read;          // fx pointer
+	write_type_t    write;         // fx pointer
+	open_type_t     open;          // fx pointer
+	close_type_t    close;         // fx pointer
+	readdir_type_t  readdir;       // fx pointer
+	finddir_type_t  finddir;       // fx pointer
 
-	struct fs_node *ptr;         // Used by mountpoints and symlinks(shortcuts)
+	struct fs_node *ptr;           // Used by mountpoints and symlinks(shortcuts)
 }
 fs_node_t;
 

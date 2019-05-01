@@ -35,7 +35,7 @@ u32int write_fs ( fs_node_t *node, u32int offset, u32int size, u8int *buffer )
 	}
 }
 
-void open_fs  ( fs_node_t *node, u8int read, u8int write )
+void open_fs ( fs_node_t *node, u8int read, u8int write )
 {
 	// Does the node have a callback
 	if ( node -> open != 0 )
@@ -87,7 +87,7 @@ void initialise_fileSystem ( struct multiboot *mboot_ptr )
 	// Find the location of our initial ramdisk
 	ASSERT( mboot_ptr -> mods_count > 0 );
 
-	u32int initrd_location = *( ( u32int * ) mboot_ptr -> mods_addr );
+	u32int initrd_location = *( ( u32int * )   mboot_ptr -> mods_addr );
 	u32int initrd_end      = *( ( u32int * ) ( mboot_ptr -> mods_addr + 4 ) );
 
 	// Don't trample our module with placement accesses

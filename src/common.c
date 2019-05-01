@@ -61,6 +61,7 @@ int strcmp ( char *str1, char *str2 )
 		if ( str1[ i ] != str2[ i ] )
 		{
 			failed = 1;
+
 			break;
 		}
 
@@ -143,7 +144,7 @@ extern void panic ( const char *message, const char *file, u32int line )
 	monitor_write( "\n"     );
 
 	// Halt by going into an infinite loop
-	for(;;);
+	for( ;; );
 }
 
 // Prints message and enters infinite loop (stopping program execution)
@@ -153,13 +154,13 @@ extern void panic_assert ( const char *file, u32int line, const char *desc )
 	asm volatile( "cli" );  // disable interrupts
 
 	monitor_write( "ASSERTION-FAILED(" );
-	monitor_write( ( char * ) desc                );
+	monitor_write( ( char * ) desc     );
 	monitor_write( ") at "             );
-	monitor_write( ( char * ) file                );
+	monitor_write( ( char * ) file     );
 	monitor_write( ":"                 );
 	monitor_write_dec( line            );
 	monitor_write( "\n"                );
 
 	// Halt by going into an infinite loop
-	for(;;);
+	for( ;; );
 }

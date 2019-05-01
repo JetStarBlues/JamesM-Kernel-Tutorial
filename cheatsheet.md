@@ -52,6 +52,18 @@ Debugging
 	* navigate call stack
 * `quit`
 
+Floating point
+* Examine FPU stack
+
+	* `p $st0`
+	* `p $st1`
+	* `p { $st0, $st1, $st2, $st3, $st4, $st5, $st6, $st7 }`
+	* `info float`
+* Examine float variable (DQ)
+
+	. `p {double} &varName`
+
+
 TUI
 * enter or leave TUI mode: `ctrl-x + a`
 * change focused window: `ctrl-x + o`
@@ -67,6 +79,76 @@ Trace commands
 
 More
 * Official manual: [old][1], [new][2]
+
+
+# objdump
+
+Disassembly
+* `-D`
+	* disassemble all sections
+* `-d`
+	* disassemble .text
+* `M intel`
+	* use intel syntax in disassembly
+* `-D -b binary -m i386`
+	* disassemble unkown binary using i386 ISA
+
+Hex dump
+* `-s`
+	* hex dump all
+* `-s -j .rodta`
+	* hex dump .rodata
+
+
+# readelf
+
+* `a`
+	* all
+
+
+# hexdump
+
+* `-C`
+	* hex+ASCII (more useful than default)
+* `-s`
+	* offset
+* `-n`
+	* number of bytes
+
+
+# Compiling
+
+Compiling C code
+* Vanilla
+	* `gcc inputFile.c -o outputFile.o`
+* `-g`
+	* generate debugging information
+* `-mfpmath=387`
+	* force x87 instead of SSE floating point
+
+Compiling assembly code
+
+* gcc (at&t syntax)
+	* Vanilla
+		* `as inputFile.asm -o outputFile.o`
+	* With debug symbols (for use with gdb)
+		* `as -g inputFile.asm -o outputFile.o`
+	* Skip need for linker
+		* `gcc -g -m64 -nostdlib inputFile.s -o outputFile`
+
+* nasm (nasm/intel syntax)
+	* Vanilla
+		* `nasm -f elf64 inputFile.asm -o outputFile.o`
+	* With debug symbols (for use with gdb)
+		* `nasm -f elf64 -F dwarf -g inputFile.asm -o outputFile.o`
+
+* linker (make executable  i.e. ./output )
+	* `ld -m elf_x86_64 -o outputFile outputFile.o`
+
+
+
+
+
 
 
 
