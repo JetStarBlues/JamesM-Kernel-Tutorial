@@ -60,9 +60,7 @@ Floating point
 	* `p { $st0, $st1, $st2, $st3, $st4, $st5, $st6, $st7 }`
 	* `info float`
 * Examine float variable (DQ)
-
-	. `p {double} &varName`
-
+	* `p {double} &varName`
 
 TUI
 * enter or leave TUI mode: `ctrl-x + a`
@@ -131,7 +129,7 @@ Compiling assembly code
 * gcc (at&t syntax)
 	* Vanilla
 		* `as inputFile.asm -o outputFile.o`
-	* With debug symbols (for use with gdb)
+	* With debug symbols
 		* `as -g inputFile.asm -o outputFile.o`
 	* Skip need for linker
 		* `gcc -g -m64 -nostdlib inputFile.s -o outputFile`
@@ -139,10 +137,10 @@ Compiling assembly code
 * nasm (nasm/intel syntax)
 	* Vanilla
 		* `nasm -f elf64 inputFile.asm -o outputFile.o`
-	* With debug symbols (for use with gdb)
+	* With debug symbols
 		* `nasm -f elf64 -F dwarf -g inputFile.asm -o outputFile.o`
 
-* linker (make executable  i.e. ./output )
+* linker (make executable)
 	* `ld -m elf_x86_64 -o outputFile outputFile.o`
 
 
