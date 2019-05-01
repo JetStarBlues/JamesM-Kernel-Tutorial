@@ -61,9 +61,9 @@ Floating point
 	* `info float`
 * Examine float variable
 	* `p {double} &varName`
-		* DQ, double precision
+		* double precision (DQ)
 	* `p {float} &varName`
-		* DW, single precision
+		* single precision (DW)
 
 TUI
 * enter or leave TUI mode: `ctrl-x + a`
@@ -92,12 +92,12 @@ Disassembly
 * `-M intel`
 	* use intel syntax in disassembly
 * `-D -b binary -m i386`
-	* disassemble unkown binary using i386 ISA
+	* disassemble unknown binary using i386 ISA
 
 Hex dump
 * `-s`
 	* hex dump all
-* `-s -j .rodta`
+* `-s -j .rodata`
 	* hex dump .rodata
 
 
