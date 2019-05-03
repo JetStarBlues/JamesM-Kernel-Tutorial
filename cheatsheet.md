@@ -18,6 +18,7 @@ Debugging
 		* `break fxName`
 		* `break *(0xFFFF)`
 		* `break *(fxName+offset)`
+		* `break fileName.ext:lineNo`
 * `watch`
 	* set watchpoints. Pause execution when a value changes.
 	* examples:
@@ -30,6 +31,8 @@ Debugging
 	* delete a break or watchpoint
 * `continue`
 	* resume program
+* `ctrl-c`
+	* interrupt running program
 * `step`
 	* execute next line of code
 * `stepi`
@@ -41,6 +44,8 @@ Debugging
 * `print`
 	* print variables
 	* examples:
+		* `p varName`
+		* `p *varName` (print pointee)
 		* ...
 * `x`
 	* print memory
