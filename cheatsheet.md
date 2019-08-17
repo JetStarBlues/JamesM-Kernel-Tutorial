@@ -38,7 +38,7 @@ Debugging
 * `stepi`
 	* execute next line of assembly code
 * `next`
-	* Like `step` but steps over function calls (instead of entering them)
+	* like `step` but steps over function calls (instead of entering them)
 * `nexti`
 	* ditto
 * `print`
@@ -55,6 +55,8 @@ Debugging
 	* show call stack
 * `up`, `down`
 	* navigate call stack
+* `set disassembly-flavor _choice_`
+	* choose disassembly syntax: `intel` or `att` (default)
 * `quit`
 
 Floating point
