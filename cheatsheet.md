@@ -5,7 +5,7 @@ No display
 
 Curses as display
 * exit:
-	* `esc+2` to switch to qemu command line
+	* `alt + 2` to switch to qemu command line
 	* Then type `q` and press `enter`
 
 
@@ -18,7 +18,7 @@ Debugging
 		* `break fxName`
 		* `break *(0xFFFF)`
 		* `break *(fxName+offset)`
-		* `break fileName.ext:lineNo`
+		* `break fileName:lineNo`
 * `watch`
 	* set watchpoints. Pause execution when a value changes.
 	* examples:
