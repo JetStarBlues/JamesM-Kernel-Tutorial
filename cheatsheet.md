@@ -89,7 +89,7 @@ More
 * Official manual: [old][1], [new][2]
 
 
-# objdump
+# Objdump
 
 Disassembly
 * `-D`
@@ -108,13 +108,13 @@ Hex dump
 	* hex dump .rodata
 
 
-# readelf
+# Readelf
 
 * `-a`
 	* all
 
 
-# hexdump
+# Hexdump
 
 * `-C`
 	* hex+ASCII (more useful than default)
